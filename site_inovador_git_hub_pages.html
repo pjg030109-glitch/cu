@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Site Inovador</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #020617;
+      --primary: #38bdf8;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top, #020617, #0f172a);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    header {
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 800;
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header p {
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 1.1rem;
+    }
+
+    section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, #020617, #020617cc);
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 24px;
+      transition: transform .3s ease, box-shadow .3s ease;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-8px) scale(1.01);
+      box-shadow: 0 20px 40px rgba(56,189,248,.15);
+    }
+
+    .card h3 {
+      margin-bottom: 12px;
+      color: var(--primary);
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    .cta {
+      text-align: center;
+      margin-top: 80px;
+    }
+
+    .cta button {
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+      border: none;
+      color: #020617;
+      font-weight: 700;
+      padding: 16px 32px;
+      border-radius: 999px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .cta button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(129,140,248,.4);
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Seu Site Inovador</h1>
+    <p>Um projeto moderno, rápido e pronto para o GitHub Pages</p>
+  </header>
+
+  <section>
+    <div class="grid">
+      <div class="card">
+        <h3>🚀 Rápido</h3>
+        <p>Construído apenas com HTML, CSS e JavaScript puro.</p>
+      </div>
+      <div class="card">
+        <h3>🎨 Design Moderno</h3>
+        <p>Gradientes, animações suaves e layout responsivo.</p>
+      </div>
+      <div class="card">
+        <h3>📦 Fácil de Publicar</h3>
+        <p>Suba no GitHub e ative o GitHub Pages em segundos.</p>
+      </div>
+      <div class="card">
+        <h3>🧠 Personalizável</h3>
+        <p>Ideal para portfólio, landing page ou projeto pessoal.</p>
+      </div>
+    </div>
+
+    <div class="cta">
+      <button onclick="alert('Edite o código e faça dele o seu site! 🚀')">Começar Agora</button>
+    </div>
+  </section>
+
+  <footer>
+    © 2026 · Criado para GitHub · Inovação simples e elegante
+  </footer>
+
+</body>
+</html>
