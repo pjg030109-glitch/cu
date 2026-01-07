@@ -114,7 +114,7 @@
   </footer>
 
 <script>
- const ideaInput = document.getElementById("ideaInput");
+  const ideaInput = document.getElementById("ideaInput");
   const ideaList = document.getElementById("ideaList");
 
   function getIdeas() {
@@ -136,11 +136,12 @@
 
     ideas.forEach(idea => {
       const li = document.createElement("li");
-      li.style.marginBottom = "12px";
+      li.style.marginBottom = "14px";
 
       li.innerHTML = `
         <strong>${idea.text}</strong><br>
         <small>${idea.date}</small><br>
+        <button onclick="editIdea(${idea.id})">✏️ Editar</button>
         <button onclick="deleteIdea(${idea.id})">🗑️ Excluir</button>
       `;
 
@@ -156,7 +157,7 @@
 
     ideas.push({
       id: Date.now(),
-      text: text,
+      text,
       date: formatDate()
     });
 
@@ -165,9 +166,24 @@
     loadIdeas();
   }
 
+  function editIdea(id) {
+    const ideas = getIdeas();
+    const idea = ideas.find(i => i.id === id);
+    if (!idea) return;
+
+    const newText = prompt("Edite sua ideia:", idea.text);
+    if (!newText) return;
+
+    idea.text = newText.trim();
+    idea.date = formatDate();
+
+    saveIdeas(ideas);
+    loadIdeas();
+  }
+
   function deleteIdea(id) {
     let ideas = getIdeas();
-    ideas = ideas.filter(idea => idea.id !== id);
+    ideas = ideas.filter(i => i.id !== id);
     saveIdeas(ideas);
     loadIdeas();
   }
