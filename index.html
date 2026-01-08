@@ -38,7 +38,7 @@
       border: 1px solid #1e293b;
       border-radius: 16px;
       padding: 20px;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
 
     textarea,
@@ -92,6 +92,7 @@
       border-radius: 999px;
       font-size: 0.75rem;
       margin-right: 6px;
+      cursor: pointer;
     }
 
     .actions {
@@ -120,7 +121,7 @@
 <body>
   <header>
     <h1>IdeaFlow</h1>
-    <p>Captura ideias criativas do usuário</p>
+    <p>Capture, organize e pesquise suas ideias</p>
   </header>
 
   <div class="container">
@@ -135,8 +136,14 @@
         placeholder="Tags (ex: marketing, app, IA)"
       />
 
-      <button onclick="addIdea()">Salvar ideia</button>
+      <button id="saveBtn">Salvar ideia</button>
     </div>
+
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="Pesquisar por texto ou tag..."
+    />
 
     <ul id="ideasList"></ul>
   </div>
@@ -165,7 +172,7 @@
         id: Date.now(),
         content,
         tags: tagsRaw
-          ? tagsRaw.split(",").map(tag => tag.trim())
+          ? tagsRaw.split(",").map(t => t.trim())
           : [],
         createdAt: new Date().toLocaleString()
       };
@@ -181,7 +188,6 @@
     function editIdea(id) {
       const idea = ideas.find(i => i.id === id);
       const newText = prompt("Editar ideia:", idea.content);
-
       if (!newText) return;
 
       idea.content = newText;
@@ -195,11 +201,33 @@
       renderIdeas();
     }
 
+    function getFilteredIdeas() {
+      const search = document
+        .getElementById("searchInput")
+        .value
+        .toLowerCase();
+
+      if (!search) return ideas;
+
+      return ideas.filter(idea => {
+        const textMatch = idea.content.toLowerCase().includes(search);
+        const tagMatch = idea.tags.some(tag =>
+          tag.toLowerCase().includes(search)
+        );
+        return textMatch || tagMatch;
+      });
+    }
+
+    function searchByTag(tag) {
+      document.getElementById("searchInput").value = tag;
+      renderIdeas();
+    }
+
     function renderIdeas() {
       const list = document.getElementById("ideasList");
       list.innerHTML = "";
 
-      ideas.forEach(idea => {
+      getFilteredIdeas().forEach(idea => {
         const li = document.createElement("li");
 
         li.innerHTML = `
@@ -207,7 +235,9 @@
             <p>${idea.content}</p>
 
             <div class="tags">
-              ${idea.tags.map(tag => `<span class="tag">#${tag}</span>`).join("")}
+              ${idea.tags
+                .map(tag => `<span class="tag" onclick="searchByTag('${tag}')">#${tag}</span>`)
+                .join("")}
             </div>
 
             <small>${idea.createdAt}</small>
@@ -222,6 +252,9 @@
         list.appendChild(li);
       });
     }
+
+    document.getElementById("saveBtn").addEventListener("click", addIdea);
+    document.getElementById("searchInput").addEventListener("input", renderIdeas);
 
     renderIdeas();
   </script>
