@@ -124,9 +124,7 @@
     <h2>💡 Nova ideia</h2>
 
     <textarea id="ideaInput" placeholder="Digite sua ideia..."></textarea>
-
     <input id="tagsInput" placeholder="Tags (ex: app, startup, IA)">
-
     <button onclick="addIdea()">Salvar ideia</button>
   </div>
 
@@ -147,6 +145,11 @@
 </footer>
 
 <script>
+  const ideaInput = document.getElementById("ideaInput");
+  const tagsInput = document.getElementById("tagsInput");
+  const searchInput = document.getElementById("searchInput");
+  const ideasList = document.getElementById("ideasList");
+
   let ideas = JSON.parse(localStorage.getItem("ideas")) || [];
 
   function saveIdeas() {
@@ -200,17 +203,14 @@
   }
 
   function renderIdeas() {
-    const list = document.getElementById("ideasList");
     const search = searchInput.value.toLowerCase();
-    list.innerHTML = "";
+    ideasList.innerHTML = "";
 
     ideas
-      .filter(idea => {
-        return (
-          idea.text.toLowerCase().includes(search) ||
-          idea.tags.some(tag => tag.includes(search))
-        );
-      })
+      .filter(idea =>
+        idea.text.toLowerCase().includes(search) ||
+        idea.tags.some(tag => tag.includes(search))
+      )
       .forEach(idea => {
         const li = document.createElement("li");
 
@@ -233,7 +233,7 @@
           </div>
         `;
 
-        list.appendChild(li);
+        ideasList.appendChild(li);
       });
   }
 
