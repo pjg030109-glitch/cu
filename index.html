@@ -1,34 +1,245 @@
-
-      <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Teste</title>
+  <meta charset="UTF-8" />
+  <title>IdeaFlow</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #020617;
+      color: #e5e7eb;
+    }
+
+    header {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      margin: 0;
+    }
+
+    header p {
+      color: #94a3b8;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .box {
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    textarea,
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 10px;
+      border: 1px solid #1e293b;
+      background: #020617;
+      color: #e5e7eb;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 14px;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #2563eb;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .idea {
+      background: #0f172a;
+      padding: 16px;
+      border-radius: 14px;
+      margin-bottom: 14px;
+    }
+
+    .tags {
+      margin: 8px 0;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #2563eb;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      margin-right: 6px;
+      cursor: pointer;
+    }
+
+    .actions {
+      text-align: right;
+    }
+
+    .actions button {
+      background: none;
+      border: none;
+      color: #e5e7eb;
+      cursor: pointer;
+      font-size: 1.1rem;
+      margin-left: 8px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px;
+      font-size: 0.9rem;
+      color: #64748b;
+    }
+  </style>
 </head>
 
 <body>
 
-<h1>Teste de botão</h1>
+<header>
+  <h1>IdeaFlow</h1>
+  <p>Capture, organize e evolua suas ideias</p>
+</header>
 
-<input id="campo" placeholder="Digite algo">
-<br><br>
+<div class="container">
 
-<button id="botao">Salvar</button>
+  <div class="box">
+    <h2>💡 Nova ideia</h2>
+    <textarea id="ideaInput" placeholder="Digite sua ideia..."></textarea>
+    <input id="tagsInput" placeholder="Tags (ex: app, startup, IA)" />
+    <button id="saveBtn">Salvar ideia</button>
+  </div>
 
-<p id="saida"></p>
+  <div class="box">
+    <input id="searchInput" placeholder="Buscar por texto ou tag..." />
+  </div>
+
+  <ul id="ideasList"></ul>
+
+</div>
+
+<footer>
+  IdeaFlow © GPJ
+</footer>
 
 <script>
-  console.log("JS carregou");
+document.addEventListener("DOMContentLoaded", () => {
 
-  const botao = document.getElementById("botao");
-  const campo = document.getElementById("campo");
-  const saida = document.getElementById("saida");
+  const ideaInput = document.getElementById("ideaInput");
+  const tagsInput = document.getElementById("tagsInput");
+  const searchInput = document.getElementById("searchInput");
+  const saveBtn = document.getElementById("saveBtn");
+  const ideasList = document.getElementById("ideasList");
 
-  botao.onclick = function () {
-    console.log("Botão clicado");
-    saida.innerText = "Você digitou: " + campo.value;
-    alert("FUNCIONOU");
-  };
+  let ideas = JSON.parse(localStorage.getItem("ideas")) || [];
+
+  function saveIdeas() {
+    localStorage.setItem("ideas", JSON.stringify(ideas));
+  }
+
+  function renderIdeas() {
+    const search = searchInput.value.toLowerCase();
+    ideasList.innerHTML = "";
+
+    ideas
+      .filter(idea =>
+        idea.text.toLowerCase().includes(search) ||
+        idea.tags.some(tag => tag.includes(search))
+      )
+      .forEach(idea => {
+        const li = document.createElement("li");
+
+        li.innerHTML = `
+          <div class="idea">
+            <p>${idea.text}</p>
+
+            <div class="tags">
+              ${idea.tags.map(tag =>
+                `<span class="tag">#${tag}</span>`
+              ).join("")}
+            </div>
+
+            <small>${idea.createdAt}</small>
+
+            <div class="actions">
+              <button data-edit="${idea.id}">✏️</button>
+              <button data-delete="${idea.id}">🗑️</button>
+            </div>
+          </div>
+        `;
+
+        ideasList.appendChild(li);
+      });
+  }
+
+  saveBtn.addEventListener("click", () => {
+    const text = ideaInput.value.trim();
+    const tags = tagsInput.value
+      .split(",")
+      .map(t => t.trim().toLowerCase())
+      .filter(Boolean);
+
+    if (!text) {
+      alert("Digite uma ideia!");
+      return;
+    }
+
+    ideas.unshift({
+      id: Date.now(),
+      text,
+      tags,
+      createdAt: new Date().toLocaleString()
+    });
+
+    saveIdeas();
+    ideaInput.value = "";
+    tagsInput.value = "";
+    renderIdeas();
+  });
+
+  searchInput.addEventListener("input", renderIdeas);
+
+  ideasList.addEventListener("click", (e) => {
+    const editId = e.target.dataset.edit;
+    const deleteId = e.target.dataset.delete;
+
+    if (editId) {
+      const idea = ideas.find(i => i.id == editId);
+      const newText = prompt("Editar ideia:", idea.text);
+      if (newText) {
+        idea.text = newText;
+        saveIdeas();
+        renderIdeas();
+      }
+    }
+
+    if (deleteId) {
+      ideas = ideas.filter(i => i.id != deleteId);
+      saveIdeas();
+      renderIdeas();
+    }
+  });
+
+  renderIdeas();
+});
 </script>
 
 </body>
