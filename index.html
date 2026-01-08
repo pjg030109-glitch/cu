@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>IdeaFlow</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
@@ -19,8 +19,8 @@
     }
 
     header h1 {
-      margin: 0;
       font-size: 2.5rem;
+      margin: 0;
     }
 
     header p {
@@ -33,7 +33,7 @@
       padding: 20px;
     }
 
-    .idea-box {
+    .box {
       background: #020617;
       border: 1px solid #1e293b;
       border-radius: 16px;
@@ -41,8 +41,7 @@
       margin-bottom: 20px;
     }
 
-    textarea,
-    input {
+    textarea, input {
       width: 100%;
       padding: 12px;
       margin-top: 10px;
@@ -53,9 +52,9 @@
     }
 
     button {
+      width: 100%;
       margin-top: 14px;
       padding: 12px;
-      width: 100%;
       border: none;
       border-radius: 10px;
       background: #2563eb;
@@ -64,22 +63,12 @@
       cursor: pointer;
     }
 
-    .filter-box {
-      margin-bottom: 20px;
-    }
-
-    .filter-info {
-      font-size: 0.9rem;
-      color: #94a3b8;
-      margin-top: 6px;
-    }
-
     ul {
       list-style: none;
       padding: 0;
     }
 
-    .idea-card {
+    .idea {
       background: #0f172a;
       padding: 16px;
       border-radius: 14px;
@@ -87,13 +76,13 @@
     }
 
     .tags {
-      margin-bottom: 8px;
+      margin: 8px 0;
     }
 
     .tag {
       display: inline-block;
       background: #2563eb;
-      padding: 4px 8px;
+      padding: 4px 10px;
       border-radius: 999px;
       font-size: 0.75rem;
       margin-right: 6px;
@@ -101,7 +90,6 @@
     }
 
     .actions {
-      margin-top: 8px;
       text-align: right;
     }
 
@@ -111,145 +99,128 @@
       color: #e5e7eb;
       cursor: pointer;
       font-size: 1.1rem;
-      margin-left: 6px;
+      margin-left: 8px;
     }
 
     footer {
       text-align: center;
       padding: 40px;
-      color: #64748b;
       font-size: 0.9rem;
+      color: #64748b;
     }
   </style>
 </head>
 
 <body>
-  <header>
-    <h1>IdeaFlow</h1>
-    <p>Captura e organiza ideias criativas</p>
-  </header>
 
-  <div class="container">
+<header>
+  <h1>IdeaFlow</h1>
+  <p>Capture, organize e evolua suas ideias</p>
+</header>
 
-    <div class="idea-box">
-      <h2>💡 Nova ideia</h2>
+<div class="container">
 
-      <textarea id="ideaInput" placeholder="Digite sua ideia aqui..."></textarea>
+  <div class="box">
+    <h2>💡 Nova ideia</h2>
 
-      <input
-        type="text"
-        id="tagsInput"
-        placeholder="Tags (ex: marketing, app, IA)"
-      />
+    <textarea id="ideaInput" placeholder="Digite sua ideia..."></textarea>
 
-      <button onclick="addIdea()">Salvar ideia</button>
-    </div>
+    <input id="tagsInput" placeholder="Tags (ex: app, startup, IA)">
 
-    <div class="filter-box">
-      <input
-        type="text"
-        id="filterInput"
-        placeholder="Filtrar por tag (ex: app)"
-        oninput="applyFilter()"
-      />
-      <div class="filter-info" id="filterInfo"></div>
-    </div>
-
-    <ul id="ideasList"></ul>
+    <button onclick="addIdea()">Salvar ideia</button>
   </div>
 
-  <footer>
-    IdeaFlow © GPJ
-  </footer>
+  <div class="box">
+    <input
+      id="searchInput"
+      placeholder="Buscar por texto ou tag..."
+      oninput="renderIdeas()"
+    >
+  </div>
 
-  <script>
-    let ideas = JSON.parse(localStorage.getItem("ideas")) || [];
-    let activeFilter = "";
+  <ul id="ideasList"></ul>
 
-    function saveIdeas() {
-      localStorage.setItem("ideas", JSON.stringify(ideas));
+</div>
+
+<footer>
+  IdeaFlow © GPJ
+</footer>
+
+<script>
+  let ideas = JSON.parse(localStorage.getItem("ideas")) || [];
+
+  function saveIdeas() {
+    localStorage.setItem("ideas", JSON.stringify(ideas));
+  }
+
+  function addIdea() {
+    const text = ideaInput.value.trim();
+    const tags = tagsInput.value
+      .split(",")
+      .map(t => t.trim().toLowerCase())
+      .filter(Boolean);
+
+    if (!text) {
+      alert("Digite uma ideia!");
+      return;
     }
 
-    function addIdea() {
-      const content = document.getElementById("ideaInput").value.trim();
-      const tagsRaw = document.getElementById("tagsInput").value.trim();
+    ideas.unshift({
+      id: Date.now(),
+      text,
+      tags,
+      createdAt: new Date().toLocaleString()
+    });
 
-      if (!content) {
-        alert("Digite uma ideia!");
-        return;
-      }
+    saveIdeas();
+    ideaInput.value = "";
+    tagsInput.value = "";
+    renderIdeas();
+  }
 
-      const idea = {
-        id: Date.now(),
-        content,
-        tags: tagsRaw
-          ? tagsRaw.split(",").map(tag => tag.trim().toLowerCase())
-          : [],
-        createdAt: new Date().toLocaleString()
-      };
+  function deleteIdea(id) {
+    ideas = ideas.filter(i => i.id !== id);
+    saveIdeas();
+    renderIdeas();
+  }
 
-      ideas.unshift(idea);
-      saveIdeas();
-      renderIdeas();
+  function editIdea(id) {
+    const idea = ideas.find(i => i.id === id);
+    const newText = prompt("Editar ideia:", idea.text);
+    if (!newText) return;
 
-      document.getElementById("ideaInput").value = "";
-      document.getElementById("tagsInput").value = "";
-    }
+    idea.text = newText;
+    saveIdeas();
+    renderIdeas();
+  }
 
-    function editIdea(id) {
-      const idea = ideas.find(i => i.id === id);
-      const newText = prompt("Editar ideia:", idea.content);
+  function filterByTag(tag) {
+    searchInput.value = tag;
+    renderIdeas();
+  }
 
-      if (!newText) return;
+  function renderIdeas() {
+    const list = document.getElementById("ideasList");
+    const search = searchInput.value.toLowerCase();
+    list.innerHTML = "";
 
-      idea.content = newText;
-      saveIdeas();
-      renderIdeas();
-    }
-
-    function deleteIdea(id) {
-      ideas = ideas.filter(i => i.id !== id);
-      saveIdeas();
-      renderIdeas();
-    }
-
-    function setFilter(tag) {
-      activeFilter = tag;
-      document.getElementById("filterInput").value = tag;
-      renderIdeas();
-    }
-
-    function applyFilter() {
-      activeFilter = document.getElementById("filterInput").value.trim().toLowerCase();
-      renderIdeas();
-    }
-
-    function renderIdeas() {
-      const list = document.getElementById("ideasList");
-      const info = document.getElementById("filterInfo");
-      list.innerHTML = "";
-
-      let filteredIdeas = ideas;
-
-      if (activeFilter) {
-        filteredIdeas = ideas.filter(idea =>
-          idea.tags.includes(activeFilter)
+    ideas
+      .filter(idea => {
+        return (
+          idea.text.toLowerCase().includes(search) ||
+          idea.tags.some(tag => tag.includes(search))
         );
-        info.textContent = `Filtrando por: #${activeFilter}`;
-      } else {
-        info.textContent = "";
-      }
-
-      filteredIdeas.forEach(idea => {
+      })
+      .forEach(idea => {
         const li = document.createElement("li");
 
         li.innerHTML = `
-          <div class="idea-card">
-            <p>${idea.content}</p>
+          <div class="idea">
+            <p>${idea.text}</p>
 
             <div class="tags">
               ${idea.tags.map(tag =>
-                `<span class="tag" onclick="setFilter('${tag}')">#${tag}</span>`
+                `<span class="tag" onclick="filterByTag('${tag}')">#${tag}</span>`
               ).join("")}
             </div>
 
@@ -264,9 +235,10 @@
 
         list.appendChild(li);
       });
-    }
+  }
 
-    renderIdeas();
-  </script>
+  renderIdeas();
+</script>
+
 </body>
 </html>
