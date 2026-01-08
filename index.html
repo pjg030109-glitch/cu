@@ -106,92 +106,99 @@
 </div>
 
 <script>
-  let ideas = JSON.parse(localStorage.getItem("ideas")) || [];
+ // 1. Declare explicitamente as referências do DOM
+const ideaInput = document.getElementById("ideaInput");
+const tagsInput = document.getElementById("tagsInput");
+const searchInput = document.getElementById("searchInput");
+const ideaList = document.getElementById("ideaList");
 
-  function saveIdeas() {
+let ideas = JSON.parse(localStorage.getItem("ideas")) || [];
+
+function saveIdeas() {
     localStorage.setItem("ideas", JSON.stringify(ideas));
-  }
+}
 
-  function addIdea() {
+function addIdea() {
     const text = ideaInput.value.trim();
     const tags = tagsInput.value
-      .split(",")
-      .map(t => t.trim())
-      .filter(t => t);
+        .split(",")
+        .map(t => t.trim())
+        .filter(t => t);
 
     if (!text) {
-      alert("Digite uma ideia");
-      return;
+        alert("Digite uma ideia");
+        return;
     }
 
     ideas.unshift({
-      id: Date.now(),
-      text,
-      tags
+        id: Date.now(),
+        text,
+        tags
     });
 
     saveIdeas();
     ideaInput.value = "";
     tagsInput.value = "";
-    renderIdeas();
-  }
+    renderIdeas(); // Renderiza tudo após adicionar
+}
 
-  function deleteIdea(id) {
-    ideas = ideas.filter(i => i.id !== id);
-    saveIdeas();
-    renderIdeas();
-  }
+function deleteIdea(id) {
+    if (confirm("Deseja realmente excluir esta ideia?")) {
+        ideas = ideas.filter(i => i.id !== id);
+        saveIdeas();
+        renderIdeas();
+    }
+}
 
-  function editIdea(id) {
+function editIdea(id) {
     const idea = ideas.find(i => i.id === id);
     const novo = prompt("Editar ideia:", idea.text);
-    if (!novo) return;
+    if (novo === null || novo.trim() === "") return;
+    
     idea.text = novo;
     saveIdeas();
     renderIdeas();
-  }
+}
 
-  function filterIdeas() {
-    const q = searchInput.value.toLowerCase();
-
-    if (!q) return ideas;
-
-    return ideas.filter(i =>
-      i.text.toLowerCase().includes(q) ||
-      i.tags.some(tag => tag.toLowerCase().includes(q))
-    );
-  }
-
-  function searchByTag(tag) {
-    searchInput.value = tag;
-    renderIdeas();
-  }
-
-  function renderIdeas() {
+// 2. Melhorei a lógica de busca para ser mais resiliente
+function renderIdeas() {
+    const query = searchInput.value.toLowerCase();
     ideaList.innerHTML = "";
 
-    filterIdeas().forEach(i => {
-      const li = document.createElement("li");
-      li.className = "idea";
-
-      li.innerHTML = `
-        <p>${i.text}</p>
-        <div>
-          ${i.tags.map(t =>
-            `<span class="tag" onclick="searchByTag('${t}')">#${t}</span>`
-          ).join("")}
-        </div>
-        <div class="actions">
-          <button onclick="editIdea(${i.id})">✏️</button>
-          <button onclick="deleteIdea(${i.id})">🗑️</button>
-        </div>
-      `;
-
-      ideaList.appendChild(li);
+    // Filtra as ideias antes de fazer o loop
+    const filtered = ideas.filter(i => {
+        const matchText = i.text.toLowerCase().includes(query);
+        const matchTag = i.tags.some(tag => tag.toLowerCase().includes(query));
+        return matchText || matchTag;
     });
-  }
 
-  renderIdeas();
+    filtered.forEach(i => {
+        const li = document.createElement("li");
+        li.className = "idea";
+
+        li.innerHTML = `
+            <p>${i.text}</p>
+            <div>
+                ${i.tags.map(t =>
+                    `<span class="tag" onclick="searchByTag('${t}')">#${t}</span>`
+                ).join("")}
+            </div>
+            <div class="actions">
+                <button onclick="editIdea(${i.id})">✏️</button>
+                <button onclick="deleteIdea(${i.id})">🗑️</button>
+            </div>
+        `;
+        ideaList.appendChild(li);
+    });
+}
+
+function searchByTag(tag) {
+    searchInput.value = tag;
+    renderIdeas(); // Chama a renderização com o novo valor do input
+}
+
+// Inicializa a lista ao carregar a página
+renderIdeas();
 </script>
 
 </body>
