@@ -1,170 +1,198 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>IdeaFlow</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8" />
+<title>IdeaFlow</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #020617;
-      color: #e5e7eb;
-    }
+<style>
+:root{
+  --bg:#020617;
+  --card:#0f172a;
+  --border:#1e293b;
+  --primary:#3b82f6;
+  --text:#e5e7eb;
+  --muted:#94a3b8;
+}
 
-    header {
-      text-align: center;
-      padding: 30px 20px;
-    }
+*{
+  box-sizing:border-box;
+}
 
-    header h1 {
-      margin: 0;
-      font-size: 2.4rem;
-    }
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont;
+  background: radial-gradient(circle at top, #020617, #000);
+  color:var(--text);
+}
 
-    header p {
-      color: #94a3b8;
-    }
+header{
+  text-align:center;
+  padding:50px 20px 30px;
+}
 
-    .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
-    }
+header h1{
+  margin:0;
+  font-size:2.8rem;
+  letter-spacing:-1px;
+}
 
-    .box {
-      background: #020617;
-      border: 1px solid #1e293b;
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 25px;
-    }
+header p{
+  color:var(--muted);
+  margin-top:8px;
+}
 
-    input, textarea {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 10px;
-      border: 1px solid #1e293b;
-      background: #020617;
-      color: #e5e7eb;
-    }
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:20px;
+}
 
-    button {
-      margin-top: 12px;
-      padding: 12px;
-      width: 100%;
-      border: none;
-      border-radius: 10px;
-      background: #2563eb;
-      color: white;
-      font-size: 1rem;
-      cursor: pointer;
-    }
+.box{
+  background:linear-gradient(180deg,#020617,#020617);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:22px;
+  margin-bottom:24px;
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+}
 
-    .top-actions {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
+input, textarea{
+  width:100%;
+  padding:14px;
+  margin-top:12px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:#020617;
+  color:var(--text);
+  font-size:1rem;
+}
 
-    ul {
-      list-style: none;
-      padding: 0;
-    }
+textarea{
+  resize:vertical;
+  min-height:100px;
+}
 
-    .idea-card {
-      background: #0f172a;
-      padding: 16px;
-      border-radius: 14px;
-      margin-bottom: 14px;
-    }
+button{
+  margin-top:14px;
+  padding:14px;
+  width:100%;
+  border:none;
+  border-radius:14px;
+  background:linear-gradient(135deg,var(--primary),#2563eb);
+  color:white;
+  font-size:1rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:.2s;
+}
 
-    .tag {
-      display: inline-block;
-      background: #2563eb;
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      margin-right: 6px;
-    }
+button:hover{
+  transform:translateY(-1px);
+  opacity:.95;
+}
 
-    .actions {
-      margin-top: 8px;
-      text-align: right;
-    }
+ul{
+  list-style:none;
+  padding:0;
+}
 
-    .actions button {
-      background: none;
-      border: none;
-      color: #e5e7eb;
-      font-size: 1.1rem;
-      cursor: pointer;
-      margin-left: 6px;
-    }
+.idea-card{
+  background:linear-gradient(180deg,#0f172a,#020617);
+  padding:18px;
+  border-radius:18px;
+  margin-bottom:16px;
+  border:1px solid var(--border);
+}
 
-    footer {
-      text-align: center;
-      padding: 30px;
-      color: #64748b;
-      font-size: 0.9rem;
-    }
+.idea-card p{
+  margin:0 0 10px;
+  font-size:1.05rem;
+}
 
-    .hidden {
-      display: none;
-    }
-  </style>
+.tag{
+  display:inline-block;
+  background:rgba(59,130,246,.15);
+  color:#93c5fd;
+  padding:4px 10px;
+  border-radius:999px;
+  font-size:.75rem;
+  margin-right:6px;
+}
+
+.actions{
+  margin-top:10px;
+  text-align:right;
+}
+
+.actions button{
+  background:none;
+  border:none;
+  color:var(--muted);
+  font-size:1.2rem;
+  cursor:pointer;
+}
+
+.actions button:hover{
+  color:white;
+}
+
+.hidden{display:none}
+
+footer{
+  text-align:center;
+  padding:40px;
+  color:#64748b;
+  font-size:.85rem;
+}
+</style>
 </head>
 
 <body>
 
 <header>
   <h1>IdeaFlow</h1>
-  <p>Ideias organizadas por você</p>
+  <p>Transforme pensamentos em ideias reais</p>
 </header>
 
 <div class="container">
 
-  <!-- LOGIN -->
-  <div id="loginBox" class="box">
-    <h2>🔐 Login</h2>
-    <input id="loginUser" placeholder="Usuário">
-    <input id="loginPass" type="password" placeholder="Senha">
-    <button onclick="login()">Entrar</button>
-    <button onclick="showRegister()">Criar conta</button>
+<div id="loginBox" class="box">
+  <h2>🔐 Login</h2>
+  <input id="loginUser" placeholder="Usuário">
+  <input id="loginPass" type="password" placeholder="Senha">
+  <button onclick="login()">Entrar</button>
+  <button onclick="showRegister()">Criar conta</button>
+</div>
+
+<div id="registerBox" class="box hidden">
+  <h2>🆕 Criar conta</h2>
+  <input id="regUser" placeholder="Usuário">
+  <input id="regPass" type="password" placeholder="Senha">
+  <button onclick="register()">Cadastrar</button>
+  <button onclick="showLogin()">Voltar</button>
+</div>
+
+<div id="appBox" class="hidden">
+
+  <div class="box">
+    <button onclick="logout()">🚪 Logout</button>
   </div>
 
-  <!-- CADASTRO -->
-  <div id="registerBox" class="box hidden">
-    <h2>🆕 Cadastro</h2>
-    <input id="regUser" placeholder="Usuário">
-    <input id="regPass" type="password" placeholder="Senha">
-    <button onclick="register()">Cadastrar</button>
-    <button onclick="showLogin()">Voltar</button>
+  <div class="box">
+    <h2>💡 Nova ideia</h2>
+    <textarea id="ideaInput" placeholder="Digite sua ideia..."></textarea>
+    <input id="tagsInput" placeholder="Tags (ex: app, ia, startup)">
+    <button onclick="addIdea()">Salvar ideia</button>
   </div>
 
-  <!-- APP -->
-  <div id="appBox" class="hidden">
-
-    <div class="box">
-      <button onclick="logout()">🚪 Logout</button>
-    </div>
-
-    <div class="box">
-      <h2>💡 Nova ideia</h2>
-      <textarea id="ideaInput" placeholder="Digite sua ideia..."></textarea>
-      <input id="tagsInput" placeholder="Tags (ex: app, IA, negócio)">
-      <button onclick="addIdea()">Salvar ideia</button>
-    </div>
-
-    <div class="box">
-      <h2>🔎 Pesquisar</h2>
-      <input id="searchInput" placeholder="Pesquisar por texto ou tag" oninput="renderIdeas()">
-    </div>
-
-    <ul id="ideasList"></ul>
+  <div class="box">
+    <h2>🔎 Pesquisar</h2>
+    <input id="searchInput" placeholder="Buscar por texto ou tag" oninput="renderIdeas()">
   </div>
+
+  <ul id="ideasList"></ul>
+</div>
 
 </div>
 
@@ -173,122 +201,82 @@
 </footer>
 
 <script>
-  let currentUser = localStorage.getItem("currentUser");
-  let users = JSON.parse(localStorage.getItem("users")) || {};
-  let ideas = [];
+let currentUser = localStorage.getItem("currentUser");
+let users = JSON.parse(localStorage.getItem("users")) || {};
+let ideas = [];
 
-  function saveUsers() {
-    localStorage.setItem("users", JSON.stringify(users));
-  }
+function saveUsers(){localStorage.setItem("users",JSON.stringify(users));}
 
-  function showRegister() {
-    loginBox.classList.add("hidden");
-    registerBox.classList.remove("hidden");
-  }
+function showRegister(){loginBox.classList.add("hidden");registerBox.classList.remove("hidden");}
+function showLogin(){registerBox.classList.add("hidden");loginBox.classList.remove("hidden");}
 
-  function showLogin() {
-    registerBox.classList.add("hidden");
-    loginBox.classList.remove("hidden");
-  }
+function register(){
+  if(!regUser.value||!regPass.value)return alert("Preencha tudo");
+  if(users[regUser.value])return alert("Usuário já existe");
+  users[regUser.value]={password:regPass.value,ideas:[]};
+  saveUsers();alert("Conta criada!");showLogin();
+}
 
-  function register() {
-    const u = regUser.value.trim();
-    const p = regPass.value.trim();
-    if (!u || !p) return alert("Preencha tudo");
-    if (users[u]) return alert("Usuário já existe");
+function login(){
+  if(!users[loginUser.value]||users[loginUser.value].password!==loginPass.value)
+    return alert("Login inválido");
+  localStorage.setItem("currentUser",loginUser.value);
+  location.reload();
+}
 
-    users[u] = { password: p, ideas: [] };
-    saveUsers();
-    alert("Conta criada!");
-    showLogin();
-  }
+function logout(){localStorage.removeItem("currentUser");location.reload();}
 
-  function login() {
-    const u = loginUser.value.trim();
-    const p = loginPass.value.trim();
-    if (!users[u] || users[u].password !== p) {
-      return alert("Login inválido");
-    }
-    localStorage.setItem("currentUser", u);
-    location.reload();
-  }
+function addIdea(){
+  const content=ideaInput.value.trim();
+  if(!content)return alert("Digite uma ideia!");
+  ideas.unshift({
+    id:Date.now(),
+    content,
+    tags:tagsInput.value?tagsInput.value.split(",").map(t=>t.trim().toLowerCase()):[],
+    createdAt:new Date().toLocaleString()
+  });
+  users[currentUser].ideas=ideas;
+  saveUsers();
+  ideaInput.value="";tagsInput.value="";
+  renderIdeas();
+}
 
-  function logout() {
-    localStorage.removeItem("currentUser");
-    location.reload();
-  }
+function deleteIdea(id){
+  ideas=ideas.filter(i=>i.id!==id);
+  users[currentUser].ideas=ideas;saveUsers();renderIdeas();
+}
 
-  function addIdea() {
-    const content = ideaInput.value.trim();
-    const tagsRaw = tagsInput.value.trim();
-    if (!content) return alert("Digite uma ideia!");
+function editIdea(id){
+  const idea=ideas.find(i=>i.id===id);
+  const txt=prompt("Editar ideia:",idea.content);
+  if(!txt)return;
+  idea.content=txt;saveUsers();renderIdeas();
+}
 
-    const idea = {
-      id: Date.now(),
-      content,
-      tags: tagsRaw ? tagsRaw.split(",").map(t => t.trim().toLowerCase()) : [],
-      createdAt: new Date().toLocaleString()
-    };
+function renderIdeas(){
+  const s=searchInput.value.toLowerCase();
+  ideasList.innerHTML="";
+  ideas.filter(i=>i.content.toLowerCase().includes(s)||i.tags.some(t=>t.includes(s)))
+  .forEach(i=>{
+    ideasList.innerHTML+=`
+    <li class="idea-card">
+      <p>${i.content}</p>
+      ${i.tags.map(t=>`<span class="tag">#${t}</span>`).join("")}
+      <small style="display:block;margin-top:6px;color:#64748b">${i.createdAt}</small>
+      <div class="actions">
+        <button onclick="editIdea(${i.id})">✏️</button>
+        <button onclick="deleteIdea(${i.id})">🗑️</button>
+      </div>
+    </li>`;
+  });
+}
 
-    ideas.unshift(idea);
-    users[currentUser].ideas = ideas;
-    saveUsers();
-    renderIdeas();
-
-    ideaInput.value = "";
-    tagsInput.value = "";
-  }
-
-  function deleteIdea(id) {
-    ideas = ideas.filter(i => i.id !== id);
-    users[currentUser].ideas = ideas;
-    saveUsers();
-    renderIdeas();
-  }
-
-  function editIdea(id) {
-    const idea = ideas.find(i => i.id === id);
-    const txt = prompt("Editar ideia:", idea.content);
-    if (!txt) return;
-    idea.content = txt;
-    saveUsers();
-    renderIdeas();
-  }
-
-  function renderIdeas() {
-    const search = searchInput.value.toLowerCase();
-    ideasList.innerHTML = "";
-
-    ideas
-      .filter(i =>
-        i.content.toLowerCase().includes(search) ||
-        i.tags.some(t => t.includes(search))
-      )
-      .forEach(idea => {
-        const li = document.createElement("li");
-        li.innerHTML = `
-          <div class="idea-card">
-            <p>${idea.content}</p>
-            <div>
-              ${idea.tags.map(t => `<span class="tag">#${t}</span>`).join("")}
-            </div>
-            <small>${idea.createdAt}</small>
-            <div class="actions">
-              <button onclick="editIdea(${idea.id})">✏️</button>
-              <button onclick="deleteIdea(${idea.id})">🗑️</button>
-            </div>
-          </div>
-        `;
-        ideasList.appendChild(li);
-      });
-  }
-
-  if (currentUser && users[currentUser]) {
-    loginBox.classList.add("hidden");
-    appBox.classList.remove("hidden");
-    ideas = users[currentUser].ideas || [];
-    renderIdeas();
-  }
+if(currentUser&&users[currentUser]){
+  loginBox.classList.add("hidden");
+  appBox.classList.remove("hidden");
+  ideas=users[currentUser].ideas||[];
+  renderIdeas();
+}
 </script>
 
 </body>
