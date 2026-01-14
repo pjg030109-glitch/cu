@@ -288,6 +288,15 @@
 </div>
 
 <script>
+ const currentUser = localStorage.getItem("currentUser");
+
+  if (!currentUser) {
+    window.location.href = "login.html";
+  } const currentUser = localStorage.getItem("currentUser");
+
+  if (!currentUser) {
+    window.location.href = "login.html";
+  }
 let users=JSON.parse(localStorage.getItem("users"))||{};
 let currentUser=localStorage.getItem("currentUser");
 let ideas=[];
