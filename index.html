@@ -10,6 +10,7 @@
             --primary-dark: #4f46e5;
             --danger: #ef4444;
             --edit: #f59e0b;
+            --success: #10b981;
             --bg: #f1f5f9;
             --sidebar-bg: #ffffff;
             --card-bg: #ffffff;
@@ -41,13 +42,13 @@
 
         /* --- SIDEBAR --- */
         .sidebar {
-            width: 320px;
+            width: 350px;
             background: var(--sidebar-bg);
             padding: 1.5rem;
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
             position: sticky;
             top: 0;
             height: 100vh;
@@ -60,93 +61,52 @@
         .brand { font-size: 1.5rem; font-weight: 800; color: var(--primary); letter-spacing: -1px; }
         .by-gpj { font-size: 0.6rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; }
 
-        /* --- NAVEGAÇÃO DE ABAS --- */
-        .view-tabs {
-            display: flex;
-            background: var(--input-bg);
-            padding: 5px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-        }
-        .tab-btn {
-            flex: 1;
-            padding: 8px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            font-weight: 700;
-            background: transparent;
-            color: var(--text-muted);
-            transition: 0.2s;
-        }
+        /* --- STATS --- */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 5px; }
+        .stat-card { background: var(--input-bg); padding: 10px; border-radius: 8px; text-align: center; border: 1px solid var(--border); }
+        .stat-value { font-weight: 800; color: var(--primary); font-size: 1rem; }
+        .stat-label { font-size: 0.55rem; color: var(--text-muted); text-transform: uppercase; }
+
+        /* --- TABS --- */
+        .view-tabs { display: flex; background: var(--input-bg); padding: 4px; border-radius: 8px; }
+        .tab-btn { flex: 1; padding: 6px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.7rem; font-weight: 700; background: transparent; color: var(--text-muted); }
         .tab-btn.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-        /* --- FORMULÁRIO --- */
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            background: var(--input-bg);
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-        }
-        input, select, textarea { 
-            padding: 8px; border: 1px solid var(--border); border-radius: 6px; 
-            background: var(--card-bg); color: var(--text); font-size: 0.8rem;
-        }
-        label { font-size: 0.6rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
-
-        .btn { border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .btn-primary { background: var(--primary); color: white; margin-top: 5px; }
-
-        /* --- KANBAN BOARD --- */
-        .kanban-container {
-            display: none; /* Inicia oculto */
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            padding: 1rem;
-            align-items: flex-start;
-        }
-        .kanban-column {
-            background: rgba(0,0,0,0.02);
-            border-radius: 15px;
-            padding: 15px;
-            min-height: 500px;
-        }
-        [data-theme="dark"] .kanban-column { background: rgba(255,255,255,0.03); }
-        .column-header { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-bottom: 15px; display: flex; justify-content: space-between; }
+        /* --- INPUTS --- */
+        .input-group { display: flex; flex-direction: column; gap: 6px; background: var(--input-bg); padding: 12px; border-radius: 12px; border: 1px solid var(--border); }
+        input, select, textarea { padding: 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--card-bg); color: var(--text); font-size: 0.8rem; }
+        label { font-size: 0.55rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
 
         /* --- CARDS --- */
-        .main-content { flex: 1; overflow-x: auto; }
-        .list-container { max-width: 800px; margin: 0 auto; padding: 2rem; }
-        
+        .main-content { flex: 1; overflow-x: auto; padding: 1.5rem; }
         .idea-card {
             background: var(--card-bg);
-            padding: 1.2rem;
+            padding: 1rem;
             margin-bottom: 12px;
-            border-radius: 12px;
+            border-radius: 10px;
             border: 1px solid var(--border);
             position: relative;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: transform 0.2s;
         }
-        .kanban-card { padding: 1rem; margin-bottom: 10px; cursor: grab; }
-        
-        .priority-indicator { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 10px 0 0 10px; }
+        .idea-card:hover { transform: translateY(-2px); border-color: var(--primary); }
+        .priority-indicator { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 4px 0 0 4px; }
         .prio-alta { background: var(--danger); }
         .prio-media { background: var(--edit); }
-        .prio-baixa { background: #10b981; }
+        .prio-baixa { background: var(--success); }
 
-        /* --- MODO FOCO --- */
-        #focusModal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; padding: 20px;
-        }
-        .modal-content { background: var(--card-bg); width: 100%; max-width: 600px; padding: 2rem; border-radius: 20px; position: relative; }
-        .close-modal { position: absolute; top: 20px; right: 20px; cursor: pointer; font-size: 1.5rem; }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .pin-icon { cursor: pointer; filter: grayscale(1); }
+        .pin-icon.active { filter: grayscale(0); }
 
-        @media (max-width: 900px) { .kanban-container { grid-template-columns: 1fr; } }
+        /* --- KANBAN --- */
+        .kanban-container { display: none; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .kanban-column { background: rgba(0,0,0,0.02); border-radius: 12px; padding: 12px; min-height: 80vh; }
+        [data-theme="dark"] .kanban-column { background: rgba(255,255,255,0.02); }
+
+        /* --- MODAL --- */
+        #focusModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: var(--card-bg); width: 100%; max-width: 650px; padding: 2rem; border-radius: 15px; position: relative; max-height: 90vh; overflow-y: auto; }
+
         @media (max-width: 768px) { body { flex-direction: column; } .sidebar { width: 100%; height: auto; position: static; } }
     </style>
 </head>
@@ -157,12 +117,17 @@
     </div>
 
     <aside class="sidebar">
-        <div class="header-sidebar" style="display:flex; justify-content: space-between; align-items: center;">
+        <div style="display:flex; justify-content: space-between; align-items: center;">
             <div class="brand-container">
                 <span class="brand">IdeaFlow</span>
                 <span class="by-gpj">Product by GPJ</span>
             </div>
             <button onclick="toggleTheme()" style="background:none; border:none; cursor:pointer;" id="themeBtn">🌙</button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-value" id="totalCount">0</div><div class="stat-label">Ideias</div></div>
+            <div class="stat-card"><div class="stat-value" id="valTotal">R$ 0</div><div class="stat-label">Potencial</div></div>
         </div>
 
         <div class="view-tabs">
@@ -172,54 +137,41 @@
 
         <div class="input-group">
             <input type="hidden" id="editId">
-            <label>Título</label>
-            <input type="text" id="ideaInput" placeholder="Título do Insight">
-            <label>Notas</label>
-            <textarea id="descInput" placeholder="Detalhes..."></textarea>
-            <label>Link (URL)</label>
-            <input type="url" id="linkInput" placeholder="https://...">
-            <label>Tag</label>
-            <input type="text" id="tagInput" placeholder="Ex: Financeiro">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                <div>
-                    <label>Status</label>
-                    <select id="statusInput" style="width:100%"><option value="pendente">Pendente</option><option value="andamento">Em Curso</option><option value="concluida">Concluída</option></select>
-                </div>
-                <div>
-                    <label>Prioridade</label>
-                    <select id="priorityInput" style="width:100%"><option value="baixa">Baixa</option><option value="media">Média</option><option value="alta">Alta</option></select>
-                </div>
+            <label>Título e Valor (R$)</label>
+            <div style="display: flex; gap: 5px;">
+                <input type="text" id="ideaInput" placeholder="Ideia" style="flex:2">
+                <input type="number" id="valueInput" placeholder="R$" style="flex:1">
             </div>
-            <button id="saveBtn" class="btn btn-primary" onclick="saveIdea()">Lançar no Fluxo</button>
+            <label>Descrição</label>
+            <textarea id="descInput" placeholder="Plano de ação..."></textarea>
+            <label>Link de Referência</label>
+            <input type="url" id="linkInput" placeholder="https://...">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+                <select id="statusInput"><option value="pendente">Pendente</option><option value="andamento">Em Curso</option><option value="concluida">Concluída</option></select>
+                <select id="priorityInput"><option value="baixa">Baixa</option><option value="media">Média</option><option value="alta">Alta</option></select>
+            </div>
+            <input type="text" id="tagInput" placeholder="Tag (Ex: Tech)">
+            <button id="saveBtn" class="btn-primary" style="padding:10px; border:none; border-radius:8px; cursor:pointer; font-weight:bold" onclick="saveIdea()">Lançar Insight</button>
         </div>
         
-        <input type="text" id="searchInput" placeholder="Buscar..." onkeyup="displayIdeas()" style="margin-top:10px;">
-        <div id="filterTags" style="display: flex; flex-wrap: wrap; gap: 5px;"></div>
-        <button class="btn" style="font-size:0.6rem; border:1px solid var(--border); color:var(--text-muted); background:none; margin-top: auto;" onclick="exportData()">📥 Backup GPJ</button>
+        <input type="text" id="searchInput" placeholder="Pesquisar..." onkeyup="displayIdeas()" style="margin-top:5px;">
+        <div id="filterTags" style="display: flex; flex-wrap: wrap; gap: 4px;"></div>
+        <button class="btn" style="font-size:0.6rem; border:1px solid var(--border); color:var(--text-muted); background:none; margin-top: auto; padding:8px; border-radius:5px; cursor:pointer" onclick="exportData()">📥 Backup GPJ System</button>
     </aside>
 
     <main class="main-content">
-        <div id="listView" class="list-container">
-            <div id="ideasList"></div>
+        <div id="listView">
+            <div id="ideasList" style="max-width: 800px; margin: 0 auto;"></div>
         </div>
 
         <div id="kanbanView" class="kanban-container">
-            <div class="kanban-column" id="col-pendente">
-                <div class="column-header"><span>Pendente</span> <span class="count">0</span></div>
-                <div class="kanban-cards" id="cards-pendente"></div>
-            </div>
-            <div class="kanban-column" id="col-andamento">
-                <div class="column-header"><span>Em Curso</span> <span class="count">0</span></div>
-                <div class="kanban-cards" id="cards-andamento"></div>
-            </div>
-            <div class="kanban-column" id="col-concluida">
-                <div class="column-header"><span>Concluída</span> <span class="count">0</span></div>
-                <div class="kanban-cards" id="cards-concluida"></div>
-            </div>
+            <div class="kanban-column" id="col-pendente"><div class="stat-label" style="margin-bottom:10px">Pendente</div><div id="cards-pendente"></div></div>
+            <div class="kanban-column" id="col-andamento"><div class="stat-label" style="margin-bottom:10px">Em Curso</div><div id="cards-andamento"></div></div>
+            <div class="kanban-column" id="col-concluida"><div class="stat-label" style="margin-bottom:10px">Concluída</div><div id="cards-concluida"></div></div>
         </div>
-
-        <footer style="text-align:center; padding:20px; font-size:0.7rem; color:var(--text-muted);">
-            © 2026 GPJ Enterprises | <strong>IdeaFlow v1.5</strong>
+        
+        <footer style="text-align:center; padding:20px; font-size:0.65rem; color:var(--text-muted); opacity:0.8;">
+            GPJ ENTERPRISES © 2026 | CONECTANDO VISÕES AO FUTURO
         </footer>
     </main>
 
@@ -253,6 +205,7 @@
 
         function saveIdea() {
             const name = document.getElementById('ideaInput').value;
+            const value = document.getElementById('valueInput').value || 0;
             const desc = document.getElementById('descInput').value;
             const link = document.getElementById('linkInput').value;
             const tag = document.getElementById('tagInput').value.trim() || 'Geral';
@@ -260,60 +213,71 @@
             const priority = document.getElementById('priorityInput').value;
             const editId = document.getElementById('editId').value;
 
-            if (!name) return alert("Título é obrigatório.");
+            if (!name) return alert("GPJ: Título obrigatório.");
 
-            let ideas = JSON.parse(localStorage.getItem('gpj_ideaflow_v5') || '[]');
+            let ideas = JSON.parse(localStorage.getItem('gpj_ideaflow_v6') || '[]');
 
             if (editId) {
-                ideas = ideas.map(i => i.id == editId ? { ...i, name, desc, link, tag, status, priority } : i);
+                ideas = ideas.map(i => i.id == editId ? { ...i, name, value, desc, link, tag, status, priority } : i);
                 document.getElementById('editId').value = '';
-                document.getElementById('saveBtn').innerText = 'Lançar no Fluxo';
+                document.getElementById('saveBtn').innerText = 'Lançar Insight';
             } else {
-                ideas.push({ name, desc, link, tag, status, priority, date: new Date().toLocaleDateString('pt-BR'), id: Date.now() });
+                ideas.push({ name, value, desc, link, tag, status, priority, pinned: false, date: new Date().toLocaleDateString('pt-BR'), id: Date.now() });
             }
 
-            localStorage.setItem('gpj_ideaflow_v5', JSON.stringify(ideas));
+            localStorage.setItem('gpj_ideaflow_v6', JSON.stringify(ideas));
             resetForm();
             displayIdeas();
         }
 
         function resetForm() {
             document.getElementById('ideaInput').value = '';
+            document.getElementById('valueInput').value = '';
             document.getElementById('descInput').value = '';
             document.getElementById('linkInput').value = '';
             document.getElementById('tagInput').value = '';
         }
 
+        function togglePin(id) {
+            let ideas = JSON.parse(localStorage.getItem('gpj_ideaflow_v6') || '[]');
+            ideas = ideas.map(i => i.id === id ? { ...i, pinned: !i.pinned } : i);
+            localStorage.setItem('gpj_ideaflow_v6', JSON.stringify(ideas));
+            displayIdeas();
+        }
+
         function deleteIdea(id) {
-            if(confirm("Excluir registro GPJ?")) {
-                let ideas = JSON.parse(localStorage.getItem('gpj_ideaflow_v5') || '[]');
-                localStorage.setItem('gpj_ideaflow_v5', JSON.stringify(ideas.filter(i => i.id !== id)));
+            if(confirm("Remover permanentemente do IdeaFlow?")) {
+                let ideas = JSON.parse(localStorage.getItem('gpj_ideaflow_v6') || '[]');
+                localStorage.setItem('gpj_ideaflow_v6', JSON.stringify(ideas.filter(i => i.id !== id)));
                 displayIdeas();
             }
         }
 
         function editIdea(id) {
-            const ideas = JSON.parse(localStorage.getItem('gpj_ideaflow_v5') || '[]');
+            const ideas = JSON.parse(localStorage.getItem('gpj_ideaflow_v6') || '[]');
             const i = ideas.find(i => i.id === id);
             document.getElementById('ideaInput').value = i.name;
-            document.getElementById('descInput').value = i.desc || '';
-            document.getElementById('linkInput').value = i.link || '';
+            document.getElementById('valueInput').value = i.value;
+            document.getElementById('descInput').value = i.desc;
+            document.getElementById('linkInput').value = i.link;
             document.getElementById('tagInput').value = i.tag;
             document.getElementById('statusInput').value = i.status;
             document.getElementById('priorityInput').value = i.priority;
             document.getElementById('editId').value = i.id;
-            document.getElementById('saveBtn').innerText = 'Atualizar Insight';
+            document.getElementById('saveBtn').innerText = 'Atualizar';
+            window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
         function openFocus(id) {
-            const ideas = JSON.parse(localStorage.getItem('gpj_ideaflow_v5') || '[]');
+            const ideas = JSON.parse(localStorage.getItem('gpj_ideaflow_v6') || '[]');
             const i = ideas.find(i => i.id === id);
             document.getElementById('modalBody').innerHTML = `
-                <span class="close-modal" onclick="closeFocus()">×</span>
-                <h1 style="margin: 0 0 10px 0;">${i.name}</h1>
-                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:20px;">${i.date} | #${i.tag}</p>
-                <div style="line-height:1.6; white-space:pre-wrap;">${i.desc || 'Sem notas.'}</div>
-                ${i.link ? `<p style="margin-top:20px;">🔗 <a href="${i.link}" target="_blank" style="color:var(--primary)">Acessar Link</a></p>` : ''}
+                <span style="position:absolute; top:20px; right:20px; cursor:pointer; font-size:1.5rem" onclick="closeFocus()">×</span>
+                <p style="color:var(--primary); font-size:0.6rem; font-weight:800; margin:0">INSIGHT GPJ #${i.id}</p>
+                <h1 style="margin:10px 0">${i.name}</h1>
+                <p style="color:var(--text-muted); font-size:0.8rem">Status: ${i.status} | Valor Estimado: R$ ${i.value}</p>
+                <div style="line-height:1.6; padding:15px; background:var(--input-bg); border-radius:10px; margin:15px 0; white-space:pre-wrap;">${i.desc || 'Sem descrição.'}</div>
+                ${i.link ? `<a href="${i.link}" target="_blank" style="color:var(--primary); font-weight:bold; text-decoration:none">🔗 Acessar Link Externo</a>` : ''}
             `;
             document.getElementById('focusModal').style.display = 'flex';
         }
@@ -321,38 +285,47 @@
         function closeFocus() { document.getElementById('focusModal').style.display = 'none'; }
 
         function displayIdeas() {
-            const ideas = JSON.parse(localStorage.getItem('gpj_ideaflow_v5') || '[]');
+            const ideas = JSON.parse(localStorage.getItem('gpj_ideaflow_v6') || '[]');
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             
-            // Renderizar Filtros
+            // Stats
+            document.getElementById('totalCount').innerText = ideas.length;
+            const totalCash = ideas.reduce((acc, i) => acc + parseFloat(i.value || 0), 0);
+            document.getElementById('valTotal').innerText = `R$ ${totalCash.toLocaleString()}`;
+
+            // Tags
             const tags = [...new Set(ideas.map(i => i.tag))];
             document.getElementById('filterTags').innerHTML = tags.map(t => `
                 <button onclick="selectedTag = (selectedTag === '${t}') ? null : '${t}'; displayIdeas();" 
-                        class="tab-btn" style="font-size:0.6rem; flex:none; padding:3px 8px; border:1px solid var(--border); margin-bottom:5px; background:${selectedTag === t ? 'var(--primary)' : 'transparent'}; color:${selectedTag === t ? 'white' : 'var(--text-muted)'}">${t}</button>
+                        class="tab-btn" style="font-size:0.55rem; flex:none; border:1px solid var(--border); margin-bottom:5px; background:${selectedTag === t ? 'var(--primary)' : 'transparent'}; color:${selectedTag === t ? 'white' : 'var(--text-muted)'}">${t}</button>
             `).join('');
 
             let filtered = ideas.filter(i => (i.name.toLowerCase().includes(searchTerm)) && (!selectedTag || i.tag === selectedTag));
+            
+            // Ordenação: Pinned primeiro, depois por ID decrescente
+            filtered.sort((a, b) => (b.pinned - a.pinned) || (b.id - a.id));
 
             if (currentView === 'list') {
-                const list = document.getElementById('ideasList');
-                list.innerHTML = filtered.sort((a,b) => b.id - a.id).map(i => createCardHTML(i)).join('');
+                document.getElementById('ideasList').innerHTML = filtered.map(i => createCardHTML(i)).join('');
             } else {
                 renderKanban(filtered);
             }
         }
 
-        function createCardHTML(i, isKanban = false) {
+        function createCardHTML(i) {
             return `
-                <div class="idea-card ${isKanban ? 'kanban-card' : ''}">
+                <div class="idea-card">
                     <div class="priority-indicator prio-${i.priority}"></div>
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                        <div onclick="openFocus(${i.id})" style="cursor:pointer">
-                            <strong style="display:block; font-size:${isKanban ? '0.9rem' : '1.1rem'}">${i.name}</strong>
-                            <span style="font-size:0.65rem; color:var(--text-muted)">#${i.tag}</span>
+                    <div class="card-header">
+                        <div onclick="openFocus(${i.id})" style="cursor:pointer; flex:1">
+                            <span style="font-size:0.6rem; color:var(--text-muted)">${i.date} ${i.pinned ? '📌' : ''}</span>
+                            <strong style="display:block; font-size:1rem">${i.name}</strong>
+                            <span style="font-size:0.7rem; color:var(--primary); font-weight:bold">#${i.tag} | R$ ${i.value}</span>
                         </div>
-                        <div style="display:flex; gap:4px;">
-                            <button onclick="editIdea(${i.id})" style="background:none; border:none; cursor:pointer;">✏️</button>
-                            <button onclick="deleteIdea(${i.id})" style="background:none; border:none; cursor:pointer;">🗑️</button>
+                        <div style="display:flex; gap:8px; align-items:center">
+                            <span class="pin-icon ${i.pinned ? 'active' : ''}" onclick="togglePin(${i.id})">📌</span>
+                            <button onclick="editIdea(${i.id})" style="background:none; border:none; cursor:pointer; font-size:0.9rem">✏️</button>
+                            <button onclick="deleteIdea(${i.id})" style="background:none; border:none; cursor:pointer; font-size:0.9rem">🗑️</button>
                         </div>
                     </div>
                 </div>
@@ -362,21 +335,17 @@
         function renderKanban(ideas) {
             const cols = ['pendente', 'andamento', 'concluida'];
             cols.forEach(col => {
-                const colIdeas = ideas.filter(i => i.status === col);
                 const container = document.getElementById(`cards-${col}`);
-                const countLabel = document.querySelector(`#col-${col} .count`);
-                
-                countLabel.innerText = colIdeas.length;
-                container.innerHTML = colIdeas.map(i => createCardHTML(i, true)).join('');
+                container.innerHTML = ideas.filter(i => i.status === col).map(i => createCardHTML(i)).join('');
             });
         }
 
         function exportData() {
-            const data = localStorage.getItem('gpj_ideaflow_v5') || '[]';
+            const data = localStorage.getItem('gpj_ideaflow_v6') || '[]';
             const blob = new Blob([data], { type: 'application/json' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = `GPJ_Backup_v1.5.json`;
+            a.download = `GPJ_IdeaFlow_Final_v1.6.json`;
             a.click();
         }
     </script>
