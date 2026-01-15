@@ -1,219 +1,285 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>IdeaFlow</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<title>IdeaFlow</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #020617;
-      color: #e5e7eb;
-    }
+<style>
+* { box-sizing: border-box; }
 
-    header {
-      text-align: center;
-      padding: 40px 20px;
-    }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #020617;
+  color: #e5e7eb;
+  display: flex;
+}
 
-    header h1 {
-      margin: 0;
-      font-size: 2.5rem;
-    }
+aside {
+  width: 220px;
+  background: #020617;
+  border-right: 1px solid #1e293b;
+  padding: 20px;
+}
 
-    header p {
-      color: #94a3b8;
-    }
+aside h3 {
+  margin-top: 0;
+}
 
-    .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
-    }
+aside button {
+  width: 100%;
+  margin-bottom: 8px;
+  background: #0f172a;
+  color: #e5e7eb;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+}
 
-    .idea-box {
-      border: 1px solid #1e293b;
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 30px;
-    }
+main {
+  flex: 1;
+  padding: 20px;
+}
 
-    textarea,
-    input {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 10px;
-      border: 1px solid #1e293b;
-      background: #020617;
-      color: #e5e7eb;
-    }
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
 
-    button {
-      margin-top: 14px;
-      padding: 12px;
-      width: 100%;
-      border: none;
-      border-radius: 10px;
-      background: #2563eb;
-      color: white;
-      cursor: pointer;
-    }
+textarea, input, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  background: #020617;
+  color: #e5e7eb;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+}
 
-    ul {
-      list-style: none;
-      padding: 0;
-    }
+button.primary {
+  margin-top: 10px;
+  padding: 10px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
 
-    .idea-card {
-      background: #0f172a;
-      padding: 16px;
-      border-radius: 14px;
-      margin-bottom: 14px;
-    }
+.kanban {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
 
-    .idea-card p {
-      margin: 0 0 8px 0;
-      outline: none;
-      cursor: text;
-    }
+.column {
+  background: #0f172a;
+  border-radius: 12px;
+  padding: 10px;
+}
 
-    .tags {
-      margin-bottom: 8px;
-    }
+.idea-card {
+  background: #020617;
+  border: 1px solid #1e293b;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
 
-    .tag {
-      display: inline-block;
-      background: #2563eb;
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      margin-right: 6px;
-      outline: none;
-      cursor: text;
-    }
+.idea-card p {
+  outline: none;
+}
 
-    .actions {
-      text-align: right;
-    }
+.tag {
+  display: inline-block;
+  background: #2563eb;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 0.7rem;
+  margin-right: 4px;
+}
 
-    .actions button {
-      background: none;
-      border: none;
-      color: #e5e7eb;
-      cursor: pointer;
-      font-size: 1.1rem;
-    }
+.actions {
+  text-align: right;
+  margin-top: 6px;
+}
 
-    footer {
-      text-align: center;
-      padding: 40px;
-      color: #64748b;
-    }
-  </style>
+.actions button {
+  background: none;
+  border: none;
+  color: #e5e7eb;
+  cursor: pointer;
+}
+</style>
 </head>
 
 <body>
-  <header>
-    <h1>IdeaFlow</h1>
-    <p>Capture e desenvolva suas ideias</p>
-  </header>
 
-  <div class="container">
-    <div class="idea-box">
-      <h2>💡 Nova ideia</h2>
+<aside>
+  <h3>🏷️ Tags</h3>
+  <button onclick="filterByTag(null)">Todas</button>
+  <div id="tagList"></div>
+</aside>
 
-      <textarea id="ideaInput" placeholder="Digite sua ideia..."></textarea>
-      <input id="tagsInput" placeholder="Tags separadas por vírgula" />
+<main>
 
-      <button onclick="addIdea()">Salvar ideia</button>
-    </div>
+<header>
+  <h1>IdeaFlow</h1>
+  <p>Organize, desenvolva e finalize ideias</p>
+</header>
 
-    <ul id="ideasList"></ul>
+<section>
+  <h2>💡 Nova ideia</h2>
+  <textarea id="ideaInput" placeholder="Ideia"></textarea>
+  <input id="tagsInput" placeholder="Tags separadas por vírgula">
+  <button class="primary" onclick="addIdea()">Salvar ideia</button>
+</section>
+
+<input
+  id="searchInput"
+  placeholder="Pesquisar por texto ou tag"
+  oninput="applyFilters()"
+/>
+
+<div class="kanban">
+  <div class="column">
+    <h3>💡 Ideias</h3>
+    <div id="col-idea"></div>
   </div>
+  <div class="column">
+    <h3>🚧 Em progresso</h3>
+    <div id="col-progress"></div>
+  </div>
+  <div class="column">
+    <h3>✅ Finalizadas</h3>
+    <div id="col-done"></div>
+  </div>
+</div>
 
-  <footer>IdeaFlow © GPJ</footer>
+</main>
 
-  <script>
-    let ideas = JSON.parse(localStorage.getItem("ideas")) || [];
+<script>
+let ideas = JSON.parse(localStorage.getItem("ideas")) || [];
+let activeTag = null;
 
-    function saveIdeas() {
-      localStorage.setItem("ideas", JSON.stringify(ideas));
-    }
+function save() {
+  localStorage.setItem("ideas", JSON.stringify(ideas));
+}
 
-    function addIdea() {
-      const content = ideaInput.value.trim();
-      const tags = tagsInput.value
-        .split(",")
-        .map(t => t.trim())
-        .filter(Boolean);
+function addIdea() {
+  const content = ideaInput.value.trim();
+  if (!content) return alert("Digite uma ideia");
 
-      if (!content) return alert("Digite uma ideia");
+  ideas.unshift({
+    id: Date.now(),
+    content,
+    tags: tagsInput.value.split(",").map(t => t.trim()).filter(Boolean),
+    status: "idea",
+    details: "",
+    steps: "",
+    notes: "",
+    createdAt: new Date().toLocaleString()
+  });
 
-      ideas.unshift({
-        id: Date.now(),
-        content,
-        tags,
-        createdAt: new Date().toLocaleString()
-      });
+  ideaInput.value = "";
+  tagsInput.value = "";
+  save();
+  render();
+}
 
-      saveIdeas();
-      renderIdeas();
-      ideaInput.value = "";
-      tagsInput.value = "";
-    }
+function update(id, field, value) {
+  const idea = ideas.find(i => i.id === id);
+  idea[field] = value;
+  save();
+}
 
-    function deleteIdea(id) {
-      ideas = ideas.filter(i => i.id !== id);
-      saveIdeas();
-      renderIdeas();
-    }
+function changeStatus(id, status) {
+  update(id, "status", status);
+  render();
+}
 
-    function updateIdea(id, field, value) {
-      const idea = ideas.find(i => i.id === id);
-      idea[field] = value;
-      saveIdeas();
-    }
+function deleteIdea(id) {
+  ideas = ideas.filter(i => i.id !== id);
+  save();
+  render();
+}
 
-    function renderIdeas() {
-      ideasList.innerHTML = "";
+function filterByTag(tag) {
+  activeTag = tag;
+  render();
+}
 
-      ideas.forEach(idea => {
-        const li = document.createElement("li");
+function applyFilters() {
+  render();
+}
 
-        li.innerHTML = `
-          <div class="idea-card">
-            <p contenteditable="true"
-               onblur="updateIdea(${idea.id}, 'content', this.innerText)">
-               ${idea.content}
-            </p>
+function render() {
+  ["idea","progress","done"].forEach(s => {
+    document.getElementById("col-"+s).innerHTML = "";
+  });
 
-            <div class="tags">
-              ${idea.tags.map(tag => `
-                <span class="tag"
-                  contenteditable="true"
-                  onblur="updateIdea(${idea.id}, 'tags',
-                    this.parentNode.innerText.split('#').filter(Boolean))">
-                  #${tag}
-                </span>
-              `).join("")}
-            </div>
+  const q = searchInput.value.toLowerCase();
 
-            <small>${idea.createdAt}</small>
+  ideas.filter(i => {
+    if (activeTag && !i.tags.includes(activeTag)) return false;
+    if (
+      q &&
+      !i.content.toLowerCase().includes(q) &&
+      !i.tags.some(t => t.toLowerCase().includes(q))
+    ) return false;
+    return true;
+  }).forEach(idea => {
+    const card = document.createElement("div");
+    card.className = "idea-card";
 
-            <div class="actions">
-              <button onclick="deleteIdea(${idea.id})">🗑️</button>
-            </div>
-          </div>
-        `;
+    card.innerHTML = `
+      <p contenteditable onblur="update(${idea.id}, 'content', this.innerText)">
+        ${idea.content}
+      </p>
 
-        ideasList.appendChild(li);
-      });
-    }
+      <div>
+        ${idea.tags.map(t => `<span class="tag">#${t}</span>`).join("")}
+      </div>
 
-    renderIdeas();
-  </script>
+      <select onchange="changeStatus(${idea.id}, this.value)">
+        <option value="idea" ${idea.status==="idea"?"selected":""}>Ideia</option>
+        <option value="progress" ${idea.status==="progress"?"selected":""}>Em progresso</option>
+        <option value="done" ${idea.status==="done"?"selected":""}>Finalizada</option>
+      </select>
+
+      <textarea placeholder="Descrição" onblur="update(${idea.id}, 'details', this.value)">${idea.details}</textarea>
+      <textarea placeholder="Próximos passos" onblur="update(${idea.id}, 'steps', this.value)">${idea.steps}</textarea>
+      <textarea placeholder="Notas" onblur="update(${idea.id}, 'notes', this.value)">${idea.notes}</textarea>
+
+      <div class="actions">
+        <button onclick="deleteIdea(${idea.id})">🗑️</button>
+      </div>
+    `;
+
+    document.getElementById("col-"+idea.status).appendChild(card);
+  });
+
+  renderTags();
+}
+
+function renderTags() {
+  const tagSet = new Set();
+  ideas.forEach(i => i.tags.forEach(t => tagSet.add(t)));
+
+  tagList.innerHTML = "";
+  tagSet.forEach(tag => {
+    const btn = document.createElement("button");
+    btn.textContent = "#"+tag;
+    btn.onclick = () => filterByTag(tag);
+    tagList.appendChild(btn);
+  });
+}
+
+render();
+</script>
+
 </body>
 </html>
+
