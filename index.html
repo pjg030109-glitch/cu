@@ -1,312 +1,261 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>IdeaFlow</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<title>IdeaFlow</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    :root {
-      --bg-main: #020617;
-      --bg-card: #0f172a;
-      --border: #1e293b;
-      --text-main: #e5e7eb;
-      --text-muted: #94a3b8;
-      --primary: #2563eb;
-    }
+<style>
+:root{
+--bg:#020617;
+--card:#0f172a;
+--border:#1e293b;
+--text:#e5e7eb;
+--muted:#94a3b8;
+--primary:#2563eb;
+--green:#16a34a;
+--yellow:#ca8a04;
+--red:#dc2626;
+}
 
-    * {
-      box-sizing: border-box;
-    }
+*{box-sizing:border-box}
 
-    body {
-      margin: 0;
-      font-family: system-ui, sans-serif;
-      background: var(--bg-main);
-      color: var(--text-main);
-      display: flex;
-      min-height: 100vh;
-    }
+body{
+margin:0;
+font-family:system-ui;
+background:var(--bg);
+color:var(--text);
+display:flex;
+min-height:100vh;
+}
 
-    /* SIDEBAR */
-    .sidebar {
-      width: 260px;
-      background: #020617;
-      border-right: 1px solid var(--border);
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
+/* SIDEBAR */
+.sidebar{
+width:260px;
+padding:20px;
+border-right:1px solid var(--border);
+}
 
-    .sidebar h2 {
-      margin: 0 0 10px;
-      font-size: 1.2rem;
-    }
+.sidebar input{
+width:100%;
+padding:12px;
+border-radius:12px;
+border:1px solid var(--border);
+background:#020617;
+color:var(--text);
+}
 
-    .sidebar input {
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: #020617;
-      color: var(--text-main);
-    }
+/* MAIN */
+.main{
+flex:1;
+padding:30px;
+}
 
-    .tags-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
+.idea-box{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:18px;
+padding:24px;
+margin:20px 0;
+}
 
-    .tag-btn {
-      background: rgba(37,99,235,0.15);
-      color: #93c5fd;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      cursor: pointer;
-      border: none;
-    }
+textarea,input,select{
+width:100%;
+padding:12px;
+margin-top:10px;
+border-radius:12px;
+border:1px solid var(--border);
+background:#020617;
+color:var(--text);
+}
 
-    .tag-btn.active {
-      background: var(--primary);
-      color: white;
-    }
+button{
+margin-top:14px;
+width:100%;
+padding:14px;
+border:none;
+border-radius:14px;
+background:var(--primary);
+color:white;
+font-weight:600;
+cursor:pointer;
+}
 
-    /* MAIN */
-    .main {
-      flex: 1;
-      padding: 30px;
-    }
+.idea-card{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:16px;
+padding:16px;
+margin-bottom:14px;
+display:flex;
+flex-direction:column;
+gap:8px;
+}
 
-    header h1 {
-      margin: 0;
-      font-size: 2.4rem;
-    }
+.badge{
+font-size:.7rem;
+padding:4px 8px;
+border-radius:999px;
+margin-right:6px;
+}
 
-    header p {
-      color: var(--text-muted);
-      margin-top: 8px;
-    }
+.status-idea{background:#334155}
+.status-progress{background:var(--yellow)}
+.status-done{background:var(--green)}
 
-    .idea-box {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 24px;
-      margin: 30px 0;
-    }
+.prio-low{background:#334155}
+.prio-mid{background:#2563eb}
+.prio-high{background:var(--red)}
 
-    textarea,
-    .idea-box input {
-      width: 100%;
-      padding: 14px;
-      margin-top: 12px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: #020617;
-      color: var(--text-main);
-    }
+.actions{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
 
-    button {
-      margin-top: 16px;
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 14px;
-      background: var(--primary);
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .idea-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px;
-      margin-bottom: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .tag {
-      display: inline-block;
-      background: rgba(37,99,235,0.15);
-      color: #93c5fd;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      margin-right: 6px;
-    }
-
-    .actions {
-      text-align: right;
-    }
-
-    .actions button {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-size: 1rem;
-      width: auto;
-    }
-  </style>
+.actions button{
+background:none;
+border:none;
+cursor:pointer;
+color:var(--muted);
+font-size:1.1rem;
+width:auto;
+}
+</style>
 </head>
 
 <body>
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <h2>🔍 Filtros</h2>
 
-    <input
-      id="searchInput"
-      placeholder="Pesquisar por texto..."
-      oninput="applyFilters()"
-    />
+<aside class="sidebar">
+<h2>🔍 Filtro</h2>
+<input id="searchInput" placeholder="Pesquisar..." oninput="renderIdeas()">
+</aside>
 
-    <strong>Tags</strong>
-    <div class="tags-list" id="tagsFilter"></div>
-  </aside>
+<main class="main">
+<h1>IdeaFlow</h1>
+<p style="color:var(--muted)">Evolua suas ideias</p>
 
-  <!-- MAIN -->
-  <main class="main">
-    <header>
-      <h1>IdeaFlow</h1>
-      <p>Capture e organize suas ideias</p>
-    </header>
+<div class="idea-box">
+<h2>💡 Nova ideia</h2>
 
-    <div class="idea-box">
-      <h2>💡 Nova ideia</h2>
+<textarea id="ideaInput" placeholder="Descreva a ideia"></textarea>
+<input id="tagsInput" placeholder="Tags (ex: app, IA)">
+<select id="statusInput">
+<option value="idea">Ideia</option>
+<option value="progress">Em progresso</option>
+<option value="done">Finalizada</option>
+</select>
+<select id="priorityInput">
+<option value="low">Prioridade baixa</option>
+<option value="mid">Prioridade média</option>
+<option value="high">Prioridade alta</option>
+</select>
 
-      <textarea id="ideaInput" placeholder="Digite sua ideia..."></textarea>
-      <input id="tagsInput" placeholder="Tags (ex: app, IA, negócio)" />
+<button onclick="addIdea()">Salvar</button>
+</div>
 
-      <button onclick="addIdea()">Salvar ideia</button>
-    </div>
+<div id="ideasList"></div>
+</main>
 
-    <ul id="ideasList"></ul>
-  </main>
+<script>
+const currentUser = localStorage.getItem("currentUser");
+if(!currentUser) location.href="login.html";
 
-  <script>
-    /* 🔒 LOGIN */
-    const currentUser = localStorage.getItem("currentUser");
-    if (!currentUser) window.location.href = "login.html";
+const users = JSON.parse(localStorage.getItem("users")) || {};
+let ideas = users[currentUser]?.ideas || [];
 
-    const users = JSON.parse(localStorage.getItem("users")) || {};
-    let ideas = users[currentUser]?.ideas || [];
+function save(){
+users[currentUser].ideas = ideas;
+localStorage.setItem("users",JSON.stringify(users));
+}
 
-    let activeTag = null;
-    let searchText = "";
+function addIdea(){
+if(!ideaInput.value.trim()) return alert("Digite a ideia");
 
-    function saveAll() {
-      users[currentUser].ideas = ideas;
-      localStorage.setItem("users", JSON.stringify(users));
-    }
+ideas.push({
+id:Date.now(),
+content:ideaInput.value,
+tags:tagsInput.value.split(",").map(t=>t.trim()).filter(Boolean),
+status:statusInput.value,
+priority:priorityInput.value,
+pinned:false,
+created:new Date().toLocaleString()
+});
 
-    function addIdea() {
-      const content = ideaInput.value.trim();
-      const tagsRaw = tagsInput.value.trim();
-      if (!content) return alert("Digite uma ideia!");
+ideaInput.value="";
+tagsInput.value="";
+save();
+renderIdeas();
+}
 
-      const idea = {
-        id: Date.now(),
-        content,
-        tags: tagsRaw ? tagsRaw.split(",").map(t => t.trim()) : [],
-        createdAt: new Date().toLocaleString()
-      };
+function togglePin(id){
+const idea = ideas.find(i=>i.id===id);
+idea.pinned = !idea.pinned;
+save();
+renderIdeas();
+}
 
-      ideas.unshift(idea);
-      saveAll();
-      ideaInput.value = "";
-      tagsInput.value = "";
-      renderIdeas();
-    }
+function changeStatus(id){
+const idea = ideas.find(i=>i.id===id);
+const s = prompt("Status: idea / progress / done", idea.status);
+if(!s) return;
+idea.status=s;
+save();
+renderIdeas();
+}
 
-    function editIdea(id) {
-      const idea = ideas.find(i => i.id === id);
-      const text = prompt("Editar ideia:", idea.content);
-      if (!text) return;
-      idea.content = text;
-      saveAll();
-      renderIdeas();
-    }
+function deleteIdea(id){
+ideas = ideas.filter(i=>i.id!==id);
+save();
+renderIdeas();
+}
 
-    function deleteIdea(id) {
-      ideas = ideas.filter(i => i.id !== id);
-      saveAll();
-      renderIdeas();
-    }
+function renderIdeas(){
+const q = searchInput.value.toLowerCase();
+const list = document.getElementById("ideasList");
+list.innerHTML="";
 
-    function applyFilters() {
-      searchText = searchInput.value.toLowerCase();
-      renderIdeas();
-    }
+let sorted = [...ideas]
+.filter(i=>i.content.toLowerCase().includes(q))
+.sort((a,b)=>{
+if(a.pinned!==b.pinned) return b.pinned-a.pinned;
+const p={high:3,mid:2,low:1};
+return p[b.priority]-p[a.priority];
+});
 
-    function toggleTag(tag) {
-      activeTag = activeTag === tag ? null : tag;
-      renderIdeas();
-    }
+if(!sorted.length){
+list.innerHTML="<p style='color:#94a3b8'>Nenhuma ideia</p>";
+return;
+}
 
-    function renderTags() {
-      const tags = [...new Set(ideas.flatMap(i => i.tags))];
-      tagsFilter.innerHTML = "";
+sorted.forEach(i=>{
+list.innerHTML+=`
+<div class="idea-card">
+<strong>${i.pinned?"📌 ":""}${i.content}</strong>
 
-      tags.forEach(tag => {
-        const btn = document.createElement("button");
-        btn.className = "tag-btn" + (activeTag === tag ? " active" : "");
-        btn.innerText = "#" + tag;
-        btn.onclick = () => toggleTag(tag);
-        tagsFilter.appendChild(btn);
-      });
-    }
+<div>
+<span class="badge status-${i.status}">
+${i.status}
+</span>
+<span class="badge prio-${i.priority}">
+${i.priority}
+</span>
+</div>
 
-    function renderIdeas() {
-      ideasList.innerHTML = "";
+<small>${i.created}</small>
 
-      let filtered = ideas.filter(i => {
-        const matchText =
-          i.content.toLowerCase().includes(searchText);
-        const matchTag =
-          !activeTag || i.tags.includes(activeTag);
-        return matchText && matchTag;
-      });
+<div class="actions">
+<div>
+<button onclick="togglePin(${i.id})">📌</button>
+<button onclick="changeStatus(${i.id})">🔄</button>
+</div>
+<button onclick="deleteIdea(${i.id})">🗑️</button>
+</div>
+</div>`;
+});
+}
 
-      if (filtered.length === 0) {
-        ideasList.innerHTML =
-          "<p style='color:#94a3b8'>Nenhuma ideia encontrada.</p>";
-        return;
-      }
-
-      filtered.forEach(idea => {
-        const li = document.createElement("li");
-        li.innerHTML = `
-          <div class="idea-card">
-            <strong>${idea.content}</strong>
-            <div>
-              ${idea.tags.map(tag => `<span class="tag">#${tag}</span>`).join("")}
-            </div>
-            <small>${idea.createdAt}</small>
-            <div class="actions">
-              <button onclick="editIdea(${idea.id})">✏️</button>
-              <button onclick="deleteIdea(${idea.id})">🗑️</button>
-            </div>
-          </div>
-        `;
-        ideasList.appendChild(li);
-      });
-
-      renderTags();
-    }
-
-    renderIdeas();
-  </script>
+renderIdeas();
+</script>
 </body>
 </html>
