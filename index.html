@@ -75,18 +75,13 @@
             border: 1px solid var(--border);
         }
         input, select, textarea { 
-            padding: 10px; 
-            border: 1px solid var(--border); 
-            border-radius: 8px; 
-            background: var(--card-bg); 
-            color: var(--text); 
-            font-size: 0.85rem;
-            font-family: inherit;
+            padding: 10px; border: 1px solid var(--border); border-radius: 8px; 
+            background: var(--card-bg); color: var(--text); font-size: 0.85rem; font-family: inherit;
         }
         textarea { resize: vertical; min-height: 60px; }
         label { font-size: 0.65rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
 
-        .btn { border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn { border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 5px;}
         .btn-primary { background: var(--primary); color: white; margin-top: 5px; }
         .btn-primary:hover { background: var(--primary-dark); }
 
@@ -109,16 +104,37 @@
         .prio-baixa { background: #10b981; }
 
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-        .idea-title { font-size: 1.2rem; font-weight: 700; margin: 0; }
+        .idea-title { font-size: 1.2rem; font-weight: 700; margin: 0; cursor: pointer; }
+        .idea-title:hover { color: var(--primary); }
         .idea-desc { font-size: 0.9rem; color: var(--text-muted); margin: 10px 0; line-height: 1.5; white-space: pre-wrap; }
         
-        .meta-info { display: flex; gap: 10px; align-items: center; font-size: 0.7rem; font-weight: 600; }
-        .status-tag { padding: 3px 8px; border-radius: 4px; text-transform: uppercase; }
+        .meta-info { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 0.7rem; font-weight: 600; margin-top: 15px; border-top: 1px solid var(--border); padding-top: 10px; }
+        .status-tag { padding: 3px 8px; border-radius: 4px; text-transform: uppercase; background: var(--input-bg); }
+
+        .link-ref { color: var(--primary); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
+        .link-ref:hover { text-decoration: underline; }
+
+        /* --- MODO FOCO (MODAL) --- */
+        #focusModal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;
+        }
+        .modal-content {
+            background: var(--card-bg); width: 100%; max-width: 600px; padding: 2rem; border-radius: 20px;
+            position: relative; max-height: 90vh; overflow-y: auto;
+        }
+        .close-modal { position: absolute; top: 20px; right: 20px; cursor: pointer; font-size: 1.5rem; color: var(--text-muted); }
 
         @media (max-width: 768px) { body { flex-direction: column; } .sidebar { width: 100%; height: auto; position: static; } }
     </style>
 </head>
 <body>
+
+    <div id="focusModal">
+        <div class="modal-content" id="modalBody">
+            <span class="close-modal" onclick="closeFocus()">×</span>
+            </div>
+    </div>
 
     <aside class="sidebar">
         <div class="header-sidebar" style="display:flex; justify-content: space-between; align-items: center;">
@@ -139,14 +155,17 @@
 
         <div class="input-group">
             <input type="hidden" id="editId">
-            <label>Título</label>
-            <input type="text" id="ideaInput" placeholder="Nome da ideia">
+            <label>Título do Insight</label>
+            <input type="text" id="ideaInput" placeholder="Ex: Expansão Internacional">
             
-            <label>Notas / Descrição</label>
-            <textarea id="descInput" placeholder="Como isso vai funcionar?"></textarea>
+            <label>Notas Detalhadas</label>
+            <textarea id="descInput" placeholder="Descreva os detalhes estratégicos..."></textarea>
+
+            <label>Link de Referência</label>
+            <input type="url" id="linkInput" placeholder="https://exemplo.com">
             
             <label>Tag</label>
-            <input type="text" id="tagInput" placeholder="Ex: Tech">
+            <input type="text" id="tagInput" placeholder="Ex: Estratégia">
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                 <div>
@@ -161,13 +180,13 @@
             <button id="saveBtn" class="btn btn-primary" onclick="saveIdea()">Lançar no Fluxo</button>
         </div>
         
-        <button class="btn" style="font-size:0.7rem; border:1px solid var(--border); color:var(--text-muted); background:none;" onclick="exportData()">📥 Exportar Backup</button>
+        <button class="btn" style="font-size:0.7rem; border:1px solid var(--border); color:var(--text-muted); background:none;" onclick="exportData()">📥 Backup GPJ</button>
     </aside>
 
     <main class="main-content">
         <div id="ideasList"></div>
         <footer style="text-align:center; padding:20px; font-size:0.7rem; color:var(--text-muted);">
-            © 2026 GPJ Enterprises | <strong>IdeaFlow v1.3</strong>
+            © 2026 GPJ Enterprises | <strong>IdeaFlow v1.4</strong>
         </footer>
     </main>
 
@@ -192,24 +211,25 @@
         function saveIdea() {
             const name = document.getElementById('ideaInput').value;
             const desc = document.getElementById('descInput').value;
+            const link = document.getElementById('linkInput').value;
             const tag = document.getElementById('tagInput').value.trim();
             const status = document.getElementById('statusInput').value;
             const priority = document.getElementById('priorityInput').value;
             const editId = document.getElementById('editId').value;
 
-            if (!name || !tag) return alert("Título e Tag são obrigatórios.");
+            if (!name || !tag) return alert("Título e Tag são obrigatórios para a GPJ.");
 
-            let ideas = JSON.parse(localStorage.getItem('gpj_ideaflow_v3') || '[]');
+            let ideas = JSON.parse(localStorage.getItem('gpj_ideaflow_v4') || '[]');
 
             if (editId) {
-                ideas = ideas.map(i => i.id == editId ? { ...i, name, desc, tag, status, priority } : i);
+                ideas = ideas.map(i => i.id == editId ? { ...i, name, desc, link, tag, status, priority } : i);
                 document.getElementById('editId').value = '';
                 document.getElementById('saveBtn').innerText = 'Lançar no Fluxo';
             } else {
-                ideas.push({ name, desc, tag, status, priority, date: new Date().toLocaleDateString('pt-BR'), id: Date.now() });
+                ideas.push({ name, desc, link, tag, status, priority, date: new Date().toLocaleDateString('pt-BR'), id: Date.now() });
             }
 
-            localStorage.setItem('gpj_ideaflow_v3', JSON.stringify(ideas));
+            localStorage.setItem('gpj_ideaflow_v4', JSON.stringify(ideas));
             resetForm();
             displayIdeas();
         }
@@ -217,41 +237,67 @@
         function resetForm() {
             document.getElementById('ideaInput').value = '';
             document.getElementById('descInput').value = '';
+            document.getElementById('linkInput').value = '';
             document.getElementById('tagInput').value = '';
         }
 
         function editIdea(id) {
-            const ideas = JSON.parse(localStorage.getItem('gpj_ideaflow_v3') || '[]');
+            const ideas = JSON.parse(localStorage.getItem('gpj_ideaflow_v4') || '[]');
             const i = ideas.find(i => i.id === id);
             document.getElementById('ideaInput').value = i.name;
             document.getElementById('descInput').value = i.desc || '';
+            document.getElementById('linkInput').value = i.link || '';
             document.getElementById('tagInput').value = i.tag;
             document.getElementById('statusInput').value = i.status;
             document.getElementById('priorityInput').value = i.priority;
             document.getElementById('editId').value = i.id;
-            document.getElementById('saveBtn').innerText = 'Atualizar';
+            document.getElementById('saveBtn').innerText = 'Atualizar Insight';
+            window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
         function deleteIdea(id) {
-            if(confirm("Remover do banco de dados da GPJ?")) {
-                let ideas = JSON.parse(localStorage.getItem('gpj_ideaflow_v3') || '[]');
-                localStorage.setItem('gpj_ideaflow_v3', JSON.stringify(ideas.filter(i => i.id !== id)));
+            if(confirm("Confirmar exclusão definitiva do registro?")) {
+                let ideas = JSON.parse(localStorage.getItem('gpj_ideaflow_v4') || '[]');
+                localStorage.setItem('gpj_ideaflow_v4', JSON.stringify(ideas.filter(i => i.id !== id)));
                 displayIdeas();
             }
         }
 
+        function openFocus(id) {
+            const ideas = JSON.parse(localStorage.getItem('gpj_ideaflow_v4') || '[]');
+            const i = ideas.find(i => i.id === id);
+            const modal = document.getElementById('focusModal');
+            const body = document.getElementById('modalBody');
+
+            body.innerHTML = `
+                <span class="close-modal" onclick="closeFocus()">×</span>
+                <p style="color:var(--primary); font-weight:800; font-size:0.7rem; text-transform:uppercase;">Modo Foco GPJ</p>
+                <h1 style="margin: 10px 0;">${i.name}</h1>
+                <p style="color:var(--text-muted); font-size:0.8rem; margin-bottom:20px;">Registrado em ${i.date} | Tag: #${i.tag}</p>
+                <div style="line-height:1.6; font-size:1.1rem; white-space:pre-wrap;">${i.desc || 'Sem descrição adicional.'}</div>
+                ${i.link ? `<p style="margin-top:20px;">🔗 <a href="${i.link}" target="_blank" class="link-ref">${i.link}</a></p>` : ''}
+                <div style="margin-top:30px; display:flex; gap:10px;">
+                    <span class="status-tag status-${i.status}">${i.status}</span>
+                    <span class="status-tag">Prioridade ${i.priority}</span>
+                </div>
+            `;
+            modal.style.display = 'flex';
+        }
+
+        function closeFocus() { document.getElementById('focusModal').style.display = 'none'; }
+
         function exportData() {
-            const data = localStorage.getItem('gpj_ideaflow_v3') || '[]';
+            const data = localStorage.getItem('gpj_ideaflow_v4') || '[]';
             const blob = new Blob([data], { type: 'application/json' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = `GPJ_Backup_${new Date().getTime()}.json`;
+            a.download = `GPJ_IdeaFlow_v1.4_${new Date().getTime()}.json`;
             a.click();
         }
 
         function displayIdeas() {
             const list = document.getElementById('ideasList');
-            const ideas = JSON.parse(localStorage.getItem('gpj_ideaflow_v3') || '[]');
+            const ideas = JSON.parse(localStorage.getItem('gpj_ideaflow_v4') || '[]');
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             
             document.getElementById('totalCount').innerText = ideas.length;
@@ -271,18 +317,18 @@
                     <div class="card-header">
                         <div>
                             <p style="font-size:0.65rem; color:var(--text-muted); margin:0;">REGISTRADO EM ${i.date}</p>
-                            <h3 class="idea-title">${i.name}</h3>
+                            <h3 class="idea-title" onclick="openFocus(${i.id})">${i.name} 🔎</h3>
                         </div>
                         <div style="display:flex; gap:5px;">
                             <button class="btn" style="background:var(--edit); color:white; padding:5px 8px;" onclick="editIdea(${i.id})">✏️</button>
                             <button class="btn" style="background:var(--danger); color:white; padding:5px 8px;" onclick="deleteIdea(${i.id})">🗑️</button>
                         </div>
                     </div>
-                    ${i.desc ? `<p class="idea-desc">${i.desc}</p>` : ''}
+                    ${i.desc ? `<p class="idea-desc">${i.desc.substring(0, 150)}${i.desc.length > 150 ? '...' : ''}</p>` : ''}
                     <div class="meta-info">
                         <span style="color:var(--primary)">#${i.tag}</span>
-                        <span class="status-tag status-${i.status}" style="background:var(--border)">${i.status}</span>
-                        <span style="text-transform:uppercase; opacity:0.6">Prioridade ${i.priority}</span>
+                        <span class="status-tag status-${i.status}">${i.status}</span>
+                        ${i.link ? `<a href="${i.link}" target="_blank" class="link-ref">🔗 Link</a>` : ''}
                     </div>
                 </div>
             `).join('');
