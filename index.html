@@ -17,21 +17,18 @@
 
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; min-height: 100vh; transition: 0.3s; }
         
-        /* --- AUTH SCREEN --- */
-        #auth-container { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: flex; align-items: center; justify-content: center; }
-        .auth-card { background: var(--sidebar-bg); padding: 2.5rem; border-radius: 20px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        /* --- AUTH & MODAL --- */
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .modal-card { background: var(--sidebar-bg); padding: 2.5rem; border-radius: 20px; width: 100%; max-width: 500px; position: relative; max-height: 90vh; overflow-y: auto; }
 
-        /* --- APP LAYOUT --- */
+        /* --- LAYOUT --- */
         #main-app { display: none; width: 100%; }
         .sidebar { width: 350px; background: var(--sidebar-bg); padding: 1.5rem; border-right: 1px solid var(--border); height: 100vh; position: sticky; top: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-        .main-content { flex: 1; padding: 2rem; overflow-x: auto; }
+        .main-content { flex: 1; padding: 2rem; }
 
-        /* --- COMPONENTS --- */
-        .input-group { display: flex; flex-direction: column; gap: 8px; background: rgba(0,0,0,0.02); padding: 15px; border-radius: 12px; }
-        input, select, textarea { padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--card-bg); color: var(--text); font-size: 0.9rem; }
-        .btn-gpj { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        .btn-gpj:hover { background: var(--primary-dark); }
-
+        .input-group { display: flex; flex-direction: column; gap: 8px; background: rgba(0,0,0,0.03); padding: 15px; border-radius: 12px; }
+        input, select, textarea { padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--card-bg); color: var(--text); }
+        
         .view-tabs { display: flex; background: rgba(0,0,0,0.05); padding: 4px; border-radius: 8px; }
         .tab-btn { flex: 1; padding: 8px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.7rem; font-weight: 700; color: var(--text-muted); background: transparent; }
         .tab-btn.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
@@ -40,14 +37,13 @@
         .kanban-container { display: none; grid-template-columns: repeat(3, 1fr); gap: 20px; }
         .kanban-column { background: rgba(0,0,0,0.02); border-radius: 15px; padding: 15px; min-height: 80vh; }
 
-        /* --- CARDS --- */
-        .idea-card { background: var(--card-bg); padding: 1.2rem; margin-bottom: 12px; border-radius: 12px; border: 1px solid var(--border); position: relative; transition: 0.2s; }
-        .idea-card:hover { transform: translateY(-2px); border-color: var(--primary); }
+        .idea-card { background: var(--card-bg); padding: 1.2rem; margin-bottom: 12px; border-radius: 12px; border: 1px solid var(--border); position: relative; transition: 0.2s; cursor: pointer; }
+        .idea-card:hover { border-color: var(--primary); }
         .prio-indicator { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 12px 0 0 12px; }
 
-        #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; }
-        .toast { background: var(--primary); color: white; padding: 12px 25px; border-radius: 8px; margin-top: 10px; animation: slideIn 0.3s forwards; }
-        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        .btn-gpj { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 11000; }
+        .toast { background: var(--primary); color: white; padding: 12px 25px; border-radius: 8px; margin-top: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
         @media (max-width: 900px) { #main-app { flex-direction: column; } .sidebar { width: 100%; height: auto; position: static; } .kanban-container { grid-template-columns: 1fr; } }
     </style>
@@ -56,14 +52,18 @@
 
     <div id="toast-container"></div>
 
-    <div id="auth-container">
-        <div class="auth-card">
-            <h2 style="color:var(--primary); margin-bottom: 0;">IdeaFlow Cloud</h2>
-            <p style="font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 2rem;">GPJ SaaS Solution</p>
+    <div id="focus-modal" class="overlay" style="display:none;">
+        <div class="modal-card" id="focus-content"></div>
+    </div>
+
+    <div id="auth-container" class="overlay">
+        <div class="modal-card" style="max-width:350px; text-align:center;">
+            <h2 style="color:var(--primary); margin:0;">IdeaFlow Cloud</h2>
+            <p style="font-size:0.6rem; letter-spacing:2px; color:var(--text-muted); margin-bottom:2rem;">GPJ ENTERPRISES</p>
             <input type="email" id="login-email" placeholder="E-mail" style="width:100%; margin-bottom:10px; box-sizing:border-box;">
             <input type="password" id="login-pass" placeholder="Senha" style="width:100%; margin-bottom:20px; box-sizing:border-box;">
-            <button class="btn-gpj" id="btn-login" style="margin-bottom:10px; width:100%;">Entrar</button>
-            <button class="btn-gpj" id="btn-signup" style="background:none; color:var(--text); border:1px solid var(--border); width:100%;">Criar Conta</button>
+            <button class="btn-gpj" id="btn-login" style="width:100%; margin-bottom:10px;">Entrar</button>
+            <button class="btn-gpj" id="btn-signup" style="width:100%; background:none; color:var(--text); border:1px solid var(--border);">Criar Conta</button>
         </div>
     </div>
 
@@ -72,7 +72,7 @@
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <span style="font-weight:800; color:var(--primary); font-size:1.3rem;">IdeaFlow</span>
                 <div style="display:flex; gap:10px;">
-                    <button onclick="toggleTheme()" style="background:none; border:none; cursor:pointer;">🌙</button>
+                    <button onclick="window.toggleTheme()" style="background:none; border:none; cursor:pointer;">🌙</button>
                     <button id="btn-logout" style="background:none; border:none; cursor:pointer; font-size:0.7rem;">Sair</button>
                 </div>
             </div>
@@ -83,33 +83,25 @@
             </div>
 
             <div class="input-group">
-                <input type="text" id="idea-title" placeholder="Título do Insight">
-                <textarea id="idea-desc" placeholder="Descrição estratégica..."></textarea>
+                <input type="hidden" id="edit-id">
+                <label style="font-size:0.6rem; font-weight:800; color:var(--text-muted);">CAPTURA DE INSIGHT</label>
+                <input type="text" id="idea-title" placeholder="Título">
+                <textarea id="idea-desc" placeholder="Notas estratégicas..."></textarea>
                 <div style="display:flex; gap:5px;">
                     <input type="number" id="idea-val" placeholder="R$" style="flex:1">
                     <input type="text" id="idea-tag" placeholder="Tag" style="flex:1">
                 </div>
-                <select id="idea-status">
-                    <option value="pendente">Pendente</option>
-                    <option value="andamento">Em Curso</option>
-                    <option value="concluida">Concluída</option>
-                </select>
-                <select id="idea-prio">
-                    <option value="baixa">Prioridade Baixa</option>
-                    <option value="media">Prioridade Média</option>
-                    <option value="alta">Prioridade Alta</option>
-                </select>
-                <button class="btn-gpj" id="btn-save">Lançar na Nuvem</button>
+                <select id="idea-status"><option value="pendente">Pendente</option><option value="andamento">Em Curso</option><option value="concluida">Concluída</option></select>
+                <select id="idea-prio"><option value="baixa">Baixa</option><option value="media">Média</option><option value="alta">Alta</option></select>
+                <button class="btn-gpj" id="btn-save">Salvar na Nuvem</button>
             </div>
-            
-            <div id="user-display" style="font-size:0.6rem; color:var(--text-muted); text-align:center;"></div>
+
+            <input type="text" id="search-input" placeholder="Pesquisar ideias..." style="background:rgba(0,0,0,0.05); border:none;">
+            <div id="user-display" style="font-size:0.6rem; text-align:center; opacity:0.5;"></div>
         </aside>
 
         <main class="main-content">
-            <div id="list-view">
-                <div id="ideasList" style="max-width: 800px; margin: 0 auto;"></div>
-            </div>
-
+            <div id="list-view"><div id="ideasList" style="max-width:800px; margin:0 auto;"></div></div>
             <div id="kanban-view" class="kanban-container">
                 <div class="kanban-column"><h3>Pendente</h3><div id="k-pendente"></div></div>
                 <div class="kanban-column"><h3>Em Curso</h3><div id="k-andamento"></div></div>
@@ -135,15 +127,11 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        let currentView = 'list';
+        let allIdeas = [];
 
         // --- AUTH ---
-        document.getElementById('btn-login').onclick = () => {
-            signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value).catch(e => alert(e.message));
-        };
-        document.getElementById('btn-signup').onclick = () => {
-            createUserWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value).catch(e => alert(e.message));
-        };
+        document.getElementById('btn-login').onclick = () => signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value).catch(e => alert(e.message));
+        document.getElementById('btn-signup').onclick = () => createUserWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value).catch(e => alert(e.message));
         document.getElementById('btn-logout').onclick = () => signOut(auth);
 
         onAuthStateChanged(auth, (user) => {
@@ -151,69 +139,78 @@
                 document.getElementById('auth-container').style.display = 'none';
                 document.getElementById('main-app').style.display = 'flex';
                 document.getElementById('user-display').innerText = user.email;
-                render(user.uid);
+                syncData(user.uid);
             } else {
                 document.getElementById('auth-container').style.display = 'flex';
                 document.getElementById('main-app').style.display = 'none';
             }
         });
 
-        // --- DATABASE ---
+        // --- CRUD ---
         document.getElementById('btn-save').onclick = async () => {
-            const title = document.getElementById('idea-title').value;
-            if(!title) return;
-            await addDoc(collection(db, "ideas"), {
+            const id = document.getElementById('edit-id').value;
+            const data = {
                 uid: auth.currentUser.uid,
-                title,
+                title: document.getElementById('idea-title').value,
                 desc: document.getElementById('idea-desc').value,
                 value: document.getElementById('idea-val').value || 0,
                 tag: document.getElementById('idea-tag').value || 'Geral',
                 status: document.getElementById('idea-status').value,
                 prio: document.getElementById('idea-prio').value,
                 pinned: false,
-                createdAt: Date.now()
-            });
+                updatedAt: Date.now()
+            };
+
+            if(!data.title) return;
+
+            if(id) {
+                await updateDoc(doc(db, "ideas", id), data);
+                document.getElementById('edit-id').value = '';
+                document.getElementById('btn-save').innerText = 'Salvar na Nuvem';
+            } else {
+                await addDoc(collection(db, "ideas"), { ...data, createdAt: Date.now() });
+            }
+            
             resetForm();
-            showToast("GPJ: Insight sincronizado!");
+            showToast("Sincronizado com sucesso!");
         };
 
-        function render(uid) {
+        function syncData(uid) {
             const q = query(collection(db, "ideas"), where("uid", "==", uid));
             onSnapshot(q, (snapshot) => {
-                const ideas = [];
-                snapshot.forEach(doc => ideas.push({id: doc.id, ...doc.data()}));
-                ideas.sort((a,b) => (b.pinned - a.pinned) || (b.createdAt - a.createdAt));
-                
-                displayList(ideas);
-                displayKanban(ideas);
+                allIdeas = [];
+                snapshot.forEach(doc => allIdeas.push({id: doc.id, ...doc.data()}));
+                renderAll();
             });
         }
 
-        function displayList(ideas) {
-            const container = document.getElementById('ideasList');
-            container.innerHTML = ideas.map(i => createCard(i)).join('');
-        }
-
-        function displayKanban(ideas) {
+        function renderAll() {
+            const term = document.getElementById('search-input').value.toLowerCase();
+            const filtered = allIdeas.filter(i => i.title.toLowerCase().includes(term) || i.tag.toLowerCase().includes(term))
+                                     .sort((a,b) => (b.pinned - a.pinned) || (b.updatedAt - a.updatedAt));
+            
+            // List
+            document.getElementById('ideasList').innerHTML = filtered.map(i => createCardHTML(i)).join('');
+            // Kanban
             ['pendente', 'andamento', 'concluida'].forEach(s => {
-                document.getElementById(`k-${s}`).innerHTML = ideas.filter(i => i.status === s).map(i => createCard(i)).join('');
+                document.getElementById(`k-${s}`).innerHTML = filtered.filter(i => i.status === s).map(i => createCardHTML(i)).join('');
             });
         }
 
-        function createCard(i) {
+        function createCardHTML(i) {
             const colors = { alta: '#ef4444', media: '#f59e0b', baixa: '#10b981' };
             return `
-                <div class="idea-card">
+                <div class="idea-card" onclick="window.openFocus('${i.id}')">
                     <div class="prio-indicator" style="background:${colors[i.prio]}"></div>
                     <div style="display:flex; justify-content:space-between; align-items:start;">
-                        <div>
+                        <div style="flex:1">
                             <span style="font-size:0.6rem; color:var(--text-muted)">#${i.tag} ${i.pinned ? '📌' : ''}</span>
                             <strong style="display:block;">${i.title}</strong>
-                            <p style="font-size:0.8rem; margin:5px 0; opacity:0.8;">${i.desc || ''}</p>
                             <span style="font-size:0.7rem; color:var(--primary); font-weight:bold;">R$ ${i.value}</span>
                         </div>
-                        <div style="display:flex; gap:8px;">
+                        <div onclick="event.stopPropagation()" style="display:flex; gap:10px;">
                             <button onclick="window.pinIdea('${i.id}', ${i.pinned})" style="background:none; border:none; cursor:pointer;">📍</button>
+                            <button onclick="window.editIdea('${i.id}')" style="background:none; border:none; cursor:pointer;">✏️</button>
                             <button onclick="window.deleteIdea('${i.id}')" style="background:none; border:none; cursor:pointer;">🗑️</button>
                         </div>
                     </div>
@@ -222,33 +219,58 @@
         }
 
         // --- GLOBALS ---
-        window.deleteIdea = id => confirm("Remover da nuvem?") && deleteDoc(doc(db, "ideas", id));
-        window.pinIdea = (id, current) => updateDoc(doc(db, "ideas", id), { pinned: !current });
+        window.deleteIdea = id => confirm("Excluir da nuvem?") && deleteDoc(doc(db, "ideas", id));
+        window.pinIdea = (id, cur) => updateDoc(doc(db, "ideas", id), { pinned: !cur, updatedAt: Date.now() });
+        
+        window.editIdea = id => {
+            const i = allIdeas.find(x => x.id === id);
+            document.getElementById('edit-id').value = i.id;
+            document.getElementById('idea-title').value = i.title;
+            document.getElementById('idea-desc').value = i.desc;
+            document.getElementById('idea-val').value = i.value;
+            document.getElementById('idea-tag').value = i.tag;
+            document.getElementById('idea-status').value = i.status;
+            document.getElementById('idea-prio').value = i.prio;
+            document.getElementById('btn-save').innerText = 'Atualizar Registro';
+            window.scrollTo({top:0, behavior:'smooth'});
+        };
+
+        window.openFocus = id => {
+            const i = allIdeas.find(x => x.id === id);
+            document.getElementById('focus-content').innerHTML = `
+                <span onclick="window.closeFocus()" style="position:absolute; top:20px; right:20px; cursor:pointer; font-size:1.5rem;">×</span>
+                <p style="color:var(--primary); font-size:0.6rem; font-weight:800; margin:0;">MODO FOCO GPJ</p>
+                <h2 style="margin:10px 0;">${i.title}</h2>
+                <div style="background:rgba(0,0,0,0.03); padding:20px; border-radius:15px; line-height:1.6; white-space:pre-wrap;">${i.desc || 'Nenhuma nota detalhada.'}</div>
+                <p style="margin-top:20px; font-weight:bold; color:var(--primary);">Investimento/Valor: R$ ${i.value}</p>
+                <button class="btn-gpj" style="width:100%; margin-top:10px;" onclick="window.closeFocus()">Voltar ao Fluxo</button>
+            `;
+            document.getElementById('focus-modal').style.display = 'flex';
+        };
+
+        window.closeFocus = () => document.getElementById('focus-modal').style.display = 'none';
+        
         window.toggleTheme = () => {
             const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', t);
         };
 
-        // --- UI CONTROL ---
+        // --- UI ---
+        document.getElementById('search-input').onkeyup = renderAll;
         document.getElementById('tab-list').onclick = () => {
-            currentView = 'list';
             document.getElementById('list-view').style.display = 'block';
             document.getElementById('kanban-view').style.display = 'none';
             document.getElementById('tab-list').classList.add('active');
             document.getElementById('tab-kanban').classList.remove('active');
         };
         document.getElementById('tab-kanban').onclick = () => {
-            currentView = 'kanban';
             document.getElementById('list-view').style.display = 'none';
             document.getElementById('kanban-view').style.display = 'grid';
             document.getElementById('tab-list').classList.remove('active');
             document.getElementById('tab-kanban').classList.add('active');
         };
 
-        function resetForm() {
-            ['idea-title','idea-desc','idea-val','idea-tag'].forEach(id => document.getElementById(id).value = '');
-        }
-
+        function resetForm() { ['idea-title','idea-desc','idea-val','idea-tag'].forEach(id => document.getElementById(id).value = ''); }
         function showToast(m) {
             const t = document.createElement('div'); t.className = 'toast'; t.innerText = m;
             document.getElementById('toast-container').appendChild(t);
