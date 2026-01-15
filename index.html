@@ -259,8 +259,9 @@ function render() {
         onblur="updateField(${idea.id}, 'notes', this.value)">${idea.notes}</textarea>
 
       <div class="actions">
-        <button onclick="deleteIdea(${idea.id})">🗑️</button>
-      </div>
+  <button onclick="openIdea(${idea.id})">🔍 Abrir</button>
+  <button onclick="deleteIdea(${idea.id})">🗑️</button>
+</div>
     `;
 
     document.getElementById("col-"+idea.status).appendChild(card);
@@ -282,6 +283,9 @@ function renderTags() {
 }
 
 render();
+  function openIdea(id) {
+  window.location.href = `idea.html?id=${id}`;
+}
 </script>
 
 </body>
