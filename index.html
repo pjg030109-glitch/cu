@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IdeaFlow Pro v2.9 | GPJ Metrics Edition</title>
+    <title>IdeaFlow Pro v3.0 | GPJ Execution Master</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root {
@@ -29,7 +29,7 @@
         .sidebar { width: 350px; background: var(--sidebar-bg); padding: 1.5rem; border-right: 1px solid var(--border); height: 100vh; position: sticky; top: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; box-sizing: border-box; }
         .main-content { flex: 1; padding: 2rem; box-sizing: border-box; }
 
-        /* Stats Grid (Restaurado) */
+        /* Stats Grid */
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 5px; }
         .stat-item { background: rgba(0,0,0,0.03); padding: 10px; border-radius: 12px; text-align: center; border: 1px solid var(--border); }
         .stat-val { display: block; font-weight: 900; font-size: 1.1rem; color: var(--primary); }
@@ -65,6 +65,12 @@
         .tag-pill { font-size: 0.65rem; padding: 5px 12px; border-radius: 20px; background: rgba(99, 102, 241, 0.1); color: var(--primary); cursor: pointer; font-weight: 700; border: 1px solid transparent; }
         .tag-pill.active { background: var(--primary); color: white; }
         .value-badge { color: var(--success); font-weight: 800; font-size: 0.8rem; margin-left: 8px; }
+
+        /* Checklist Styles */
+        .check-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; background: rgba(0,0,0,0.02); padding: 10px; border-radius: 8px; border: 1px solid transparent; transition: 0.2s; }
+        .check-item:hover { border-color: var(--border); background: var(--card-bg); }
+        .check-text { flex: 1; font-size: 0.9rem; color: var(--text); }
+        .check-done { text-decoration: line-through; opacity: 0.5; }
 
         .btn-gpj { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 10px; font-weight: 800; cursor: pointer; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px; width: 100%; }
         .btn-gpj:hover { filter: brightness(1.1); transform: translateY(-1px); }
@@ -198,12 +204,14 @@
                 allIdeas = [];
                 snapshot.forEach(doc => allIdeas.push({id: doc.id, ...doc.data()}));
                 updateTagCloud();
-                updateStats(); // Conta as ideias
+                updateStats();
                 renderAll();
+                // Atualizar modal se aberto
+                const openId = document.getElementById('current-focus-id')?.value;
+                if(openId) window.openFocus(openId);
             });
         }
 
-        // Função de Contagem Restaurada
         function updateStats() {
             const stats = { pendente: 0, andamento: 0, concluida: 0 };
             allIdeas.forEach(i => {
@@ -232,8 +240,12 @@
         function createCardHTML(i) {
             const colors = { alta: '#ef4444', media: '#f59e0b', baixa: '#10b981' };
             const deadlineInfo = i.deadline ? `<span style="font-size:0.6rem; background:rgba(0,0,0,0.05); padding:2px 5px; border-radius:4px; margin-top:5px; display:inline-block;">📅 ${new Date(i.deadline).toLocaleDateString('pt-BR')}</span>` : '';
-            // Visualização do Valor Restaurada
             const valueDisplay = i.value && i.value > 0 ? `<span class="value-badge">R$ ${parseFloat(i.value).toLocaleString('pt-BR')}</span>` : '';
+            
+            // Lógica do Checklist no Card
+            const tasksTotal = i.checklist?.length || 0;
+            const tasksDone = i.checklist?.filter(t => t.done).length || 0;
+            const progressDisplay = tasksTotal > 0 ? `<div style="font-size:0.6rem; color:var(--primary); font-weight:800; margin-top:4px;">✅ ${tasksDone}/${tasksTotal} TAREFAS</div>` : '';
 
             return `
                 <div class="idea-card" draggable="true" data-id="${i.id}" data-status="${i.status}" onclick="window.openFocus('${i.id}')">
@@ -246,6 +258,7 @@
                             </div>
                             <strong style="display:block; margin-top:2px; font-size:1rem;">${i.title}</strong>
                             ${deadlineInfo}
+                            ${progressDisplay}
                         </div>
                         <div onclick="event.stopPropagation()" style="display:flex; gap:8px; opacity:0.6;">
                             <button onclick="window.pinIdea('${i.id}', ${i.pinned})" style="background:none; border:none; cursor:pointer; font-size:1rem;" title="Fixar">${i.pinned ? '📍' : '📌'}</button>
@@ -260,12 +273,10 @@
         function setupDragAndDrop() {
             const cards = document.querySelectorAll('.idea-card');
             const columns = document.querySelectorAll('.kanban-column');
-
             cards.forEach(card => {
                 card.addEventListener('dragstart', () => card.classList.add('dragging'));
                 card.addEventListener('dragend', () => card.classList.remove('dragging'));
             });
-
             columns.forEach(column => {
                 column.addEventListener('dragover', e => { e.preventDefault(); column.classList.add('drag-over'); });
                 column.addEventListener('dragleave', () => column.classList.remove('drag-over'));
@@ -277,7 +288,6 @@
                     const id = card.dataset.id;
                     const oldStatus = card.dataset.status;
                     const newStatus = column.dataset.status;
-                    
                     if (id && newStatus !== oldStatus) {
                         await updateDoc(doc(db, "ideas", id), { status: newStatus, updatedAt: Date.now() });
                     }
@@ -297,6 +307,7 @@
             document.getElementById('kanban-view-container').style.display = 'grid';
             document.getElementById('tab-list-btn').classList.remove('active');
             document.getElementById('tab-kanban-btn').classList.add('active');
+            setupDragAndDrop(); // Re-apply events
         };
 
         window.editIdea = (id) => {
@@ -343,7 +354,7 @@
             resetForm();
         };
 
-        window.deleteIdea = id => confirm("Deseja realmente remover este insight?") && deleteDoc(doc(db, "ideas", id));
+        window.deleteIdea = id => confirm("Remover?") && deleteDoc(doc(db, "ideas", id));
         window.pinIdea = (id, cur) => updateDoc(doc(db, "ideas", id), { pinned: !cur });
         
         window.setTagFilter = (tag) => { activeTagFilter = tag; updateTagCloud(); renderAll(); };
@@ -354,11 +365,14 @@
         function resetForm() { ['idea-title','idea-desc','idea-val','idea-tag','idea-deadline','idea-link'].forEach(f => document.getElementById(f).value = ''); }
         function showToast(m) { const t = document.createElement('div'); t.className = 'toast'; t.innerText = m; document.getElementById('toast-container').appendChild(t); setTimeout(() => t.remove(), 2500); }
         
+        // MODAL FOCO + CHECKLIST
         window.openFocus = id => {
             const i = allIdeas.find(x => x.id === id);
             if(!i) return;
             const valDisplay = i.value ? `R$ ${parseFloat(i.value).toLocaleString('pt-BR')}` : 'Não definido';
+            
             document.getElementById('focus-content').innerHTML = `
+                <input type="hidden" id="current-focus-id" value="${i.id}">
                 <span onclick="window.closeFocus()" style="position:absolute; top:20px; right:20px; cursor:pointer; font-size:1.5rem;">×</span>
                 <p style="color:var(--primary); font-size:0.6rem; font-weight:900; letter-spacing:1px;">DOCUMENTO ESTRATÉGICO</p>
                 <h2 style="margin:10px 0 5px;">${i.title}</h2>
@@ -367,24 +381,80 @@
                 <div style="background:rgba(0,0,0,0.03); padding:20px; border-radius:15px; font-size:0.95rem; line-height:1.6; white-space:pre-wrap;">${i.desc || 'Sem notas detalhadas.'}</div>
                 
                 <div style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap;">
-                    ${i.link ? `<a href="${i.link}" target="_blank" style="background:rgba(99,102,241,0.1); color:var(--primary); padding:8px 15px; border-radius:8px; text-decoration:none; font-weight:700; font-size:0.8rem;">🔗 Acessar Link Externo</a>` : ''}
+                    ${i.link ? `<a href="${i.link}" target="_blank" style="background:rgba(99,102,241,0.1); color:var(--primary); padding:8px 15px; border-radius:8px; text-decoration:none; font-weight:700; font-size:0.8rem;">🔗 Link Externo</a>` : ''}
                     <button class="btn-gpj" style="font-size:0.7rem; padding:8px 15px; width:auto;" onclick="window.exportPDF('${i.id}')">📄 Gerar PDF</button>
+                </div>
+
+                <div style="margin-top:25px; border-top:1px solid var(--border); padding-top:20px;">
+                    <h4 style="margin:0 0 10px 0; font-size:0.7rem; letter-spacing:1px; color:var(--text-muted); text-transform:uppercase;">Plano de Execução</h4>
+                    <div id="check-items-list">
+                        ${(i.checklist || []).map((t, idx) => `
+                            <div class="check-item">
+                                <input type="checkbox" ${t.done ? 'checked' : ''} onclick="window.toggleTask('${i.id}', ${idx})">
+                                <span class="check-text ${t.done ? 'check-done' : ''}">${t.text}</span>
+                                <span onclick="window.removeTask('${i.id}', ${idx})" style="cursor:pointer; opacity:0.3; font-size:0.8rem;">🗑️</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div style="display:flex; gap:5px; margin-top:10px;">
+                        <input type="text" id="new-task" placeholder="Adicionar nova tarefa..." style="flex:1; padding:8px;">
+                        <button class="btn-gpj" onclick="window.addTask('${i.id}')" style="width:auto; padding:8px 15px;">+</button>
+                    </div>
                 </div>
             `;
             document.getElementById('focus-modal').style.display = 'flex';
         };
+
+        window.addTask = async (id) => {
+            const text = document.getElementById('new-task').value;
+            if(!text) return;
+            const i = allIdeas.find(x => x.id === id);
+            const newList = [...(i.checklist || []), { text, done: false }];
+            await updateDoc(doc(db, "ideas", id), { checklist: newList });
+        };
+
+        window.toggleTask = async (id, idx) => {
+            const i = allIdeas.find(x => x.id === id);
+            const newList = [...i.checklist];
+            newList[idx].done = !newList[idx].done;
+            await updateDoc(doc(db, "ideas", id), { checklist: newList });
+        };
+
+        window.removeTask = async (id, idx) => {
+            const i = allIdeas.find(x => x.id === id);
+            const newList = i.checklist.filter((_, index) => index !== idx);
+            await updateDoc(doc(db, "ideas", id), { checklist: newList });
+        };
+
         window.closeFocus = () => { document.getElementById('focus-modal').style.display = 'none'; };
+        
         window.exportPDF = (id) => {
             const i = allIdeas.find(x => x.id === id);
             const { jsPDF } = window.jspdf;
             const docPdf = new jsPDF();
+            
             docPdf.setFontSize(20);
-            docPdf.text("GPJ ENTERPRISES - PLANO DE AÇÃO", 10, 20);
+            docPdf.text("GPJ ENTERPRISES", 10, 20);
+            
             docPdf.setFontSize(14);
             docPdf.text(`Projeto: ${i.title}`, 10, 35);
             docPdf.text(`Valor: R$ ${i.value || 0}`, 10, 45);
             docPdf.text(`Status: ${i.status} | Prazo: ${i.deadline || 'N/A'}`, 10, 55);
-            docPdf.text(`Link: ${i.link || 'Nenhum'}`, 10, 65);
+            
+            docPdf.setFontSize(12);
+            const splitDesc = docPdf.splitTextToSize(i.desc || "Sem descrição.", 180);
+            docPdf.text(splitDesc, 10, 70);
+            
+            let y = 70 + (splitDesc.length * 7);
+            
+            if(i.checklist && i.checklist.length > 0) {
+                docPdf.text("CHECKLIST DE TAREFAS:", 10, y + 10);
+                i.checklist.forEach((t, idx) => {
+                    const status = t.done ? "[X]" : "[ ]";
+                    docPdf.text(`${status} ${t.text}`, 15, y + 20 + (idx * 7));
+                });
+            }
+            
             docPdf.save(`Relatorio_GPJ_${i.title}.pdf`);
         };
 
