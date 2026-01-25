@@ -34,7 +34,7 @@
         .view-tabs { display: flex; background: rgba(0,0,0,0.05); padding: 5px; border-radius: 12px; margin-bottom: 5px; }
         .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-size: 0.75rem; font-weight: 800; color: var(--text-muted); background: transparent; transition: 0.3s; }
         .tab-btn.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .kanban-container { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .kanban-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
         .kanban-column { background: rgba(0,0,0,0.02); border-radius: 18px; padding: 15px; min-height: 80vh; border: 2px dashed transparent; }
         .idea-card { background: var(--card-bg); padding: 1.2rem; margin-bottom: 15px; border-radius: 15px; border: 1px solid var(--border); position: relative; transition: 0.2s; cursor: pointer; }
         .prio-indicator { position: absolute; left: 0; top: 0; bottom: 0; width: 5px; border-radius: 15px 0 0 15px; }
@@ -50,23 +50,24 @@
     <div id="auth-container" class="overlay">
         <div class="modal-card" style="max-width:400px; text-align:center;">
             <div style="background: var(--primary); width: 60px; height: 60px; border-radius: 15px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: 900;">IF</div>
-            <h2>GPJ IdeaFlow</h2>
+            <h2 style="color:var(--text); margin:0;">Login IdeaFlow</h2>
+            <p style="font-size:0.7rem; letter-spacing:1px; color:var(--text-muted); margin-bottom:2rem;">GPJ ENTERPRISES SECURE ACCESS</p>
             <input type="email" id="login-email" placeholder="E-mail" style="width:100%; margin-bottom:12px; box-sizing: border-box; border: 2px solid var(--border);">
             <input type="password" id="login-pass" placeholder="Senha" style="width:100%; margin-bottom:15px; box-sizing: border-box; border: 2px solid var(--border);">
-            
-            <button type="button" onclick="window.resetPassword()" style="background:none; border:none; color:var(--primary); font-size:0.75rem; cursor:pointer; font-weight:bold; margin-bottom:20px; text-decoration:underline;">Esqueci minha senha</button>
-            
-            <button class="btn-gpj" id="btn-login" style="margin-bottom:10px;">Entrar</button>
-            <button class="btn-gpj" id="btn-signup" style="background:none; color:var(--text); border:1px solid var(--border);">Criar Conta</button>
-            <p id="auth-msg" style="font-size:0.8rem; margin-top:10px; font-weight:bold;"></p>
+            <button class="btn-gpj" id="btn-login" style="margin-bottom:10px;">Acessar Painel</button>
+            <button class="btn-gpj" id="btn-signup" style="background:none; color:var(--text); border:1px solid var(--border);">Criar Nova Conta</button>
+            <p id="auth-msg" style="font-size:0.8rem; margin-top:20px; font-weight:bold;"></p>
         </div>
     </div>
 
     <div id="main-app">
         <aside class="sidebar">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-weight:900; color:var(--primary);">IdeaFlow GPJ</span>
-                <button onclick="window.toggleTheme()" style="background:none; border:none; cursor:pointer;">🌙</button>
+                <div>
+                    <span style="font-weight:900; color:var(--primary); font-size:1.4rem; letter-spacing:-1px;">IdeaFlow</span>
+                    <p style="margin:0; font-size:0.5rem; color:var(--text-muted); font-weight:700; letter-spacing:1px;">GPJ ENTERPRISES</p>
+                </div>
+                <button onclick="window.toggleTheme()" style="background:none; border:none; cursor:pointer; font-size:1.2rem;">🌙</button>
             </div>
 
             <div class="stats-grid">
@@ -83,39 +84,42 @@
 
             <div class="input-group">
                 <input type="hidden" id="edit-id">
-                <input type="text" id="idea-title" placeholder="Título">
-                <textarea id="idea-desc" placeholder="Descrição..."></textarea>
+                <input type="text" id="idea-title" placeholder="Título do Insight">
+                <textarea id="idea-desc" placeholder="Descrição estratégica..."></textarea>
                 <div class="row-group">
-                    <input type="number" id="idea-val" placeholder="R$">
+                    <input type="number" id="idea-val" placeholder="Valor R$">
                     <input type="text" id="idea-tag" placeholder="Tag">
-                </div>
-                <div class="row-group">
-                    <input type="url" id="idea-link" placeholder="Link (URL)">
-                    <input type="date" id="idea-deadline">
                 </div>
                 <select id="idea-status">
                     <option value="pendente">Pendente</option>
                     <option value="andamento">Em Curso</option>
                     <option value="concluida">Concluída</option>
                 </select>
-                <button class="btn-gpj" id="btn-save">Salvar</button>
+                <button class="btn-gpj" id="btn-save">Salvar Insight</button>
             </div>
             
             <div id="tag-filters" style="display:flex; flex-wrap:wrap; gap:5px; margin-top:10px;"></div>
-            <button id="btn-logout" style="margin-top:auto; background:none; border:none; color:var(--danger); cursor:pointer; font-weight:bold;">SAIR</button>
+
+            <div style="margin-top:auto; padding-top:20px; border-top:1px solid var(--border);">
+                <button id="btn-logout" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.7rem; font-weight:700;">SAIR DO SISTEMA</button>
+            </div>
         </aside>
 
         <main class="main-content">
-            <div id="list-view-container" style="display:block;"><div id="ideasList"></div></div>
+            <div id="list-view-container" style="display:block;"><div id="ideasList" style="max-width:850px; margin:0 auto;"></div></div>
             <div id="kanban-view-container" class="kanban-container" style="display:none;">
                 <div class="kanban-column" data-status="pendente"><h3>Pendente</h3><div id="k-pendente"></div></div>
                 <div class="kanban-column" data-status="andamento"><h3>Em Curso</h3><div id="k-andamento"></div></div>
                 <div class="kanban-column" data-status="concluida"><h3>Concluída</h3><div id="k-concluida"></div></div>
             </div>
             <div id="dashboard-view-container" style="display:none;">
-                <h1 id="dash-total-money" style="color:var(--success); text-align:center;">R$ 0,00</h1>
+                <div class="dash-card" style="background:var(--card-bg); padding:20px; border-radius:15px; border:1px solid var(--border); margin-bottom:20px; text-align:center;">
+                    <span style="font-size:0.7rem; color:var(--text-muted); font-weight:bold;">VALOR TOTAL EM CARTEIRA</span>
+                    <div id="dash-total-money" style="font-size:2.5rem; font-weight:900; color:var(--success);">R$ 0,00</div>
+                </div>
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-                    <canvas id="financeChart"></canvas><canvas id="statusChart"></canvas>
+                    <div class="dash-card" style="background:var(--card-bg); padding:20px; border-radius:15px; border:1px solid var(--border);"><canvas id="financeChart"></canvas></div>
+                    <div class="dash-card" style="background:var(--card-bg); padding:20px; border-radius:15px; border:1px solid var(--border);"><canvas id="statusChart"></canvas></div>
                 </div>
             </div>
         </main>
@@ -123,7 +127,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, where, onSnapshot, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -143,26 +147,20 @@
         let financeChart = null;
         let statusChart = null;
 
-        window.resetPassword = () => {
-            const email = document.getElementById('login-email').value;
-            if(!email) return alert("Digite seu e-mail.");
-            sendPasswordResetEmail(auth, email).then(() => alert("Link de redefinição enviado!")).catch(e => alert(e.message));
-        };
-
         document.getElementById('btn-login').onclick = () => {
             const email = document.getElementById('login-email').value;
             const pass = document.getElementById('login-pass').value;
             signInWithEmailAndPassword(auth, email, pass).then(u => {
                 if(!u.user.emailVerified) { alert("Confirme seu e-mail!"); signOut(auth); }
-            }).catch(() => alert("Erro no acesso."));
+            }).catch(e => alert("Erro no login."));
         };
 
         document.getElementById('btn-signup').onclick = () => {
             const email = document.getElementById('login-email').value;
             const pass = document.getElementById('login-pass').value;
             createUserWithEmailAndPassword(auth, email, pass).then(u => {
-                sendEmailVerification(u.user); alert("E-mail enviado!"); signOut(auth);
-            });
+                sendEmailVerification(u.user); alert("E-mail de confirmação enviado!"); signOut(auth);
+            }).catch(e => alert(e.message));
         };
 
         onAuthStateChanged(auth, (user) => {
@@ -179,26 +177,28 @@
         function syncData(uid) {
             const q = query(collection(db, "ideas"), where("uid", "==", uid));
             onSnapshot(q, (snapshot) => {
-                allIdeas = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
+                allIdeas = [];
+                snapshot.forEach(doc => allIdeas.push({id: doc.id, ...doc.data()}));
                 updateStats(); updateTagCloud(); renderAll(); updateDashboard();
             });
         }
 
         function renderAll() {
             let filtered = allIdeas.filter(i => !activeTagFilter || i.tag === activeTagFilter);
+            
             document.getElementById('ideasList').innerHTML = filtered.map(i => `
                 <div class="idea-card" onclick="window.openFocus('${i.id}')">
                     <div class="prio-indicator" style="background:var(--primary)"></div>
                     <small>#${i.tag}</small>
-                    <strong style="display:block;">${i.title}</strong>
-                    <div style="color:var(--success)">R$ ${parseFloat(i.value||0).toLocaleString('pt-BR')}</div>
+                    <strong style="display:block; margin:5px 0;">${i.title}</strong>
+                    <div style="font-size:0.75rem; font-weight:bold; color:var(--success)">R$ ${parseFloat(i.value||0).toLocaleString('pt-BR')}</div>
                 </div>
             `).join('');
 
             ['pendente', 'andamento', 'concluida'].forEach(s => {
                 document.getElementById(`k-${s}`).innerHTML = filtered.filter(x => x.status === s).map(i => `
-                    <div class="idea-card" style="padding:10px;" onclick="window.openFocus('${i.id}')">
-                        <strong>${i.title}</strong>
+                    <div class="idea-card" style="padding:10px; margin-bottom:10px;" onclick="window.openFocus('${i.id}')">
+                        <strong style="font-size:0.8rem;">${i.title}</strong>
                     </div>
                 `).join('');
             });
@@ -213,8 +213,6 @@
                 tag: document.getElementById('idea-tag').value || 'Geral',
                 value: document.getElementById('idea-val').value || 0,
                 status: document.getElementById('idea-status').value,
-                link: document.getElementById('idea-link').value || '',
-                deadline: document.getElementById('idea-deadline').value || '',
                 createdAt: Date.now()
             };
             if(!data.title) return;
@@ -222,19 +220,16 @@
             else await addDoc(collection(db, "ideas"), data);
             
             document.getElementById('edit-id').value = "";
-            ['idea-title','idea-desc','idea-val','idea-tag','idea-link','idea-deadline'].forEach(f => document.getElementById(f).value = '');
+            ['idea-title','idea-desc','idea-val','idea-tag'].forEach(f => document.getElementById(f).value = '');
         };
 
         window.openFocus = (id) => {
             const i = allIdeas.find(x => x.id === id);
             document.getElementById('focus-content').innerHTML = `
                 <span onclick="window.closeFocus()" style="float:right; cursor:pointer;">×</span>
-                <h2>${i.title}</h2>
-                <p><strong>Status:</strong> ${i.status} | <strong>R$:</strong> ${i.value}</p>
-                <p><strong>Prazo:</strong> ${i.deadline || 'Sem data'}</p>
-                <div style="background:#f9f9f9; padding:15px; border-radius:10px;">${i.desc}</div>
-                ${i.link ? `<p><a href="${i.link}" target="_blank">🔗 Acessar Link Externo</a></p>` : ''}
-                <div style="display:flex; gap:10px; margin-top:20px;">
+                <h2 style="margin-top:0;">${i.title}</h2>
+                <div style="background:rgba(0,0,0,0.03); padding:15px; border-radius:10px; margin-bottom:20px;">${i.desc}</div>
+                <div style="display:flex; gap:10px;">
                     <button class="btn-gpj" onclick="window.editIdea('${i.id}')">Editar</button>
                     <button class="btn-gpj" style="background:var(--danger)" onclick="window.deleteIdea('${i.id}')">Excluir</button>
                     <button class="btn-gpj" style="background:#10b981" onclick="window.exportPDF('${i.id}')">PDF</button>
@@ -251,8 +246,6 @@
             document.getElementById('idea-tag').value = i.tag;
             document.getElementById('idea-val').value = i.value;
             document.getElementById('idea-status').value = i.status;
-            document.getElementById('idea-link').value = i.link;
-            document.getElementById('idea-deadline').value = i.deadline;
             window.closeFocus();
         };
 
@@ -293,7 +286,7 @@
         function switchTab(view, btn) {
             ['list-view-container','kanban-view-container','dashboard-view-container'].forEach(v => document.getElementById(v).style.display='none');
             ['tab-list-btn','tab-kanban-btn','tab-dash-btn'].forEach(b => document.getElementById(b).classList.remove('active'));
-            document.getElementById(view).style.display = 'block';
+            document.getElementById(view).style.display = view === 'kanban-view-container' ? 'grid' : 'block';
             document.getElementById(btn).classList.add('active');
         }
     </script>
