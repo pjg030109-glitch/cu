@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IdeaFlow Pro v3.3 | GPJ Enterprises</title>
+    <title>IdeaFlow Pro v3.5 | GPJ Enterprises</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
@@ -21,13 +21,13 @@
 
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; min-height: 100vh; transition: 0.3s; overflow-x: hidden; }
         
-        /* Modais */
+        /* Modais e Overlay */
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
-        .modal-card { background: var(--sidebar-bg); padding: 2.5rem; border-radius: 20px; width: 100%; max-width: 550px; position: relative; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+        .modal-card { background: var(--sidebar-bg); padding: 2.5rem; border-radius: 20px; width: 100%; max-width: 500px; position: relative; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
 
         #main-app { display: none; width: 100%; }
         
-        /* Sidebar */
+        /* Sidebar e Layout */
         .sidebar { width: 350px; background: var(--sidebar-bg); padding: 1.5rem; border-right: 1px solid var(--border); height: 100vh; position: sticky; top: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; box-sizing: border-box; }
         .main-content { flex: 1; padding: 2rem; box-sizing: border-box; overflow-y: auto; height: 100vh; }
 
@@ -37,31 +37,53 @@
         .stat-val { display: block; font-weight: 900; font-size: 1.1rem; color: var(--primary); }
         .stat-label { font-size: 0.6rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; margin-top: 3px; }
 
-        /* Inputs */
+        /* Inputs Estilizados */
         .input-group { display: flex; flex-direction: column; gap: 10px; background: rgba(0,0,0,0.03); padding: 20px; border-radius: 15px; border: 1px solid var(--border); }
         .row-group { display: flex; gap: 8px; flex-wrap: wrap; }
         input, select, textarea { padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--card-bg); color: var(--text); font-size: 0.9rem; transition: 0.2s; flex: 1; min-width: 100px; }
         
-        /* Tabs */
+        /* Tabs de Navegação */
         .view-tabs { display: flex; background: rgba(0,0,0,0.05); padding: 5px; border-radius: 12px; margin-bottom: 5px; }
         .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-size: 0.75rem; font-weight: 800; color: var(--text-muted); background: transparent; transition: 0.3s; }
         .tab-btn.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
 
         /* Kanban */
-        .kanban-container { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .kanban-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
         .kanban-column { background: rgba(0,0,0,0.02); border-radius: 18px; padding: 15px; min-height: 80vh; border: 2px dashed transparent; }
-        .kanban-column h3 { font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); text-align: center; }
+        .kanban-column h3 { font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); text-align: center; margin-bottom: 15px; }
 
         /* Cards */
-        .idea-card { background: var(--card-bg); padding: 1.2rem; margin-bottom: 15px; border-radius: 15px; border: 1px solid var(--border); position: relative; transition: 0.2s; cursor: pointer; }
+        .idea-card { background: var(--card-bg); padding: 1.2rem; margin-bottom: 15px; border-radius: 15px; border: 1px solid var(--border); position: relative; transition: 0.2s; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .idea-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
         .prio-indicator { position: absolute; left: 0; top: 0; bottom: 0; width: 5px; border-radius: 15px 0 0 15px; }
         
-        .btn-gpj { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 10px; font-weight: 800; cursor: pointer; text-transform: uppercase; width: 100%; }
+        .btn-gpj { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 10px; font-weight: 800; cursor: pointer; text-transform: uppercase; width: 100%; transition: 0.2s; }
+        .btn-gpj:hover { background: var(--primary-dark); opacity: 0.9; }
+        
         .check-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; background: rgba(0,0,0,0.02); padding: 10px; border-radius: 8px; }
         .check-done { text-decoration: line-through; opacity: 0.5; }
         
-        .tag-pill { font-size: 0.65rem; padding: 5px 12px; border-radius: 20px; background: rgba(99,102,241,0.1); color: var(--primary); cursor: pointer; font-weight: 700; }
+        .tag-pill { font-size: 0.65rem; padding: 5px 12px; border-radius: 20px; background: rgba(99,102,241,0.1); color: var(--primary); cursor: pointer; font-weight: 700; border: 1px solid transparent; }
         .tag-pill.active { background: var(--primary); color: white; }
+
+        /* Estilo Específico para o Botão de Recuperação de Senha */
+        #btn-forgot {
+            background: #fffbeb; 
+            border: 1px solid #fde68a; 
+            color: #92400e; 
+            padding: 10px; 
+            border-radius: 10px; 
+            font-size: 0.8rem; 
+            font-weight: 800; 
+            cursor: pointer; 
+            margin-bottom: 20px; 
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        #btn-forgot:hover { background: #fef3c7; }
     </style>
 </head>
 <body>
@@ -71,18 +93,20 @@
     <div id="auth-container" class="overlay">
         <div class="modal-card" style="max-width:380px; text-align:center;">
             <div style="background: var(--primary); width: 60px; height: 60px; border-radius: 15px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: 900;">IF</div>
-            <h2 style="color:var(--text); margin:0;">Segurança GPJ</h2>
-            <p style="font-size:0.7rem; letter-spacing:2px; color:var(--text-muted); margin-bottom:2rem; text-transform: uppercase;">Acesso Criptografado</p>
+            <h2 style="color:var(--text); margin:0;">Bem-vindo à GPJ</h2>
+            <p style="font-size:0.7rem; letter-spacing:1px; color:var(--text-muted); margin-bottom:2rem; text-transform: uppercase;">Acesso IdeaFlow Pro</p>
             
-            <input type="email" id="login-email" placeholder="E-mail corporativo" style="width:100%; margin-bottom:12px; box-sizing: border-box;">
-            <input type="password" id="login-pass" placeholder="Senha" style="width:100%; margin-bottom:10px; box-sizing: border-box;">
+            <input type="email" id="login-email" placeholder="E-mail" style="width:100%; margin-bottom:12px; box-sizing: border-box; border: 2px solid var(--border);">
+            <input type="password" id="login-pass" placeholder="Senha" style="width:100%; margin-bottom:15px; box-sizing: border-box; border: 2px solid var(--border);">
             
-            <button type="button" onclick="window.resetPassword()" style="background:none; border:none; color:var(--primary); font-size:0.75rem; cursor:pointer; margin-bottom:20px; font-weight:800; text-decoration: underline;">ESQUECI MINHA SENHA</button>
+            <button type="button" id="btn-forgot" onclick="window.resetPassword()">
+                <span>🔑</span> ESQUECI MINHA SENHA
+            </button>
             
-            <button class="btn-gpj" id="btn-login" style="margin-bottom:10px;">Entrar no Sistema</button>
-            <button class="btn-gpj" id="btn-signup" style="background:none; color:var(--text); border:1px solid var(--border);">Solicitar Novo Acesso</button>
+            <button class="btn-gpj" id="btn-login" style="margin-bottom:10px;">Entrar</button>
+            <button class="btn-gpj" id="btn-signup" style="background:none; color:var(--text); border:1px solid var(--border);">Criar Conta</button>
             
-            <p id="auth-msg" style="font-size:0.75rem; color:var(--danger); margin-top:15px; font-weight:bold; min-height: 20px;"></p>
+            <p id="auth-msg" style="font-size:0.75rem; margin-top:15px; font-weight:bold; min-height: 20px; padding: 10px; border-radius: 8px;"></p>
         </div>
     </div>
 
@@ -110,15 +134,15 @@
 
             <div class="input-group">
                 <input type="hidden" id="edit-id">
-                <input type="text" id="idea-title" placeholder="Título do Insight Principal">
-                <textarea id="idea-desc" placeholder="Notas estratégicas..."></textarea>
+                <input type="text" id="idea-title" placeholder="Título da Ideia">
+                <textarea id="idea-desc" placeholder="Detalhes estratégicos..."></textarea>
                 <input type="url" id="idea-link" placeholder="Link de Referência">
                 <div class="row-group">
                     <input type="date" id="idea-deadline">
-                    <input type="text" id="idea-tag" placeholder="Tag (Ex: Marketing)">
+                    <input type="text" id="idea-tag" placeholder="Tag">
                 </div>
                 <div class="row-group">
-                    <input type="number" id="idea-val" placeholder="Valor R$">
+                    <input type="number" id="idea-val" placeholder="Potencial R$">
                     <select id="idea-prio">
                         <option value="baixa">Baixa</option>
                         <option value="media">Média</option>
@@ -130,29 +154,27 @@
                     <option value="andamento">Em Curso</option>
                     <option value="concluida">Concluída</option>
                 </select>
-                <button class="btn-gpj" id="btn-save">Lançar Insight</button>
+                <button class="btn-gpj" id="btn-save">Salvar Insight</button>
             </div>
             
             <input type="text" id="search-input" placeholder="🔍 Pesquisar..." style="background:rgba(0,0,0,0.05); border:none; width:100%; box-sizing:border-box; padding:12px; border-radius:10px;">
             <div id="tag-filters" style="display:flex; flex-wrap:wrap; gap:5px; margin-top:10px;"></div>
 
             <div style="margin-top:auto; padding-top:20px; border-top:1px solid var(--border);">
-                <button id="btn-logout" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.7rem; font-weight:700;">ENCERRAR SESSÃO</button>
+                <button id="btn-logout" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.7rem; font-weight:700;">SAIR DA SESSÃO</button>
             </div>
         </aside>
 
         <main class="main-content">
             <div id="list-view-container" style="display:block;"><div id="ideasList" style="max-width:850px; margin:0 auto;"></div></div>
-            
             <div id="kanban-view-container" class="kanban-container" style="display:none;">
                 <div class="kanban-column" data-status="pendente"><h3>Pendente</h3><div id="k-pendente"></div></div>
                 <div class="kanban-column" data-status="andamento"><h3>Em Curso</h3><div id="k-andamento"></div></div>
                 <div class="kanban-column" data-status="concluida"><h3>Concluída</h3><div id="k-concluida"></div></div>
             </div>
-
             <div id="dashboard-view-container" style="display:none;">
-                <div class="dash-card" style="background:var(--card-bg); padding:20px; border-radius:15px; border:1px solid var(--border); margin-bottom:20px;">
-                    <span style="font-size:0.7rem; color:var(--text-muted); font-weight:bold; text-transform:uppercase;">Valor Total Pipeline</span>
+                <div class="dash-card" style="background:var(--card-bg); padding:20px; border-radius:15px; border:1px solid var(--border); margin-bottom:20px; text-align: center;">
+                    <span style="font-size:0.7rem; color:var(--text-muted); font-weight:bold; text-transform:uppercase;">Valor Total do Ecossistema</span>
                     <div id="dash-total-money" style="font-size:2.5rem; font-weight:900; color:var(--success);">R$ 0,00</div>
                 </div>
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
@@ -185,38 +207,38 @@
         let financeChart = null;
         let statusChart = null;
 
-        // --- LÓGICA DE AUTENTICAÇÃO E RECUPERAÇÃO ---
+        // --- SISTEMA DE AUTENTICAÇÃO E RECUPERAÇÃO ---
 
         window.resetPassword = () => {
             const email = document.getElementById('login-email').value.trim();
             const msg = document.getElementById('auth-msg');
-            if(!email) { msg.innerText = "⚠️ Digite seu e-mail para recuperar."; msg.style.color = "var(--warning)"; return; }
-            
-            sendPasswordResetEmail(auth, email)
-                .then(() => { 
-                    msg.innerText = "✅ Link de recuperação enviado para o e-mail!"; 
-                    msg.style.color = "var(--success)"; 
-                })
-                .catch(e => { 
-                    msg.innerText = "❌ Erro: e-mail não encontrado ou inválido."; 
-                    msg.style.color = "var(--danger)"; 
-                });
+            if(!email) { 
+                msg.innerText = "⚠️ Por favor, digite seu e-mail no campo acima para recuperar."; 
+                msg.style.background = "#fff3cd"; msg.style.color = "#856404"; return; 
+            }
+            sendPasswordResetEmail(auth, email).then(() => {
+                msg.innerText = "✅ Link enviado! Verifique sua caixa de entrada e o spam.";
+                msg.style.background = "#d4edda"; msg.style.color = "#155724";
+            }).catch(e => {
+                msg.innerText = "❌ Erro: Verifique se o e-mail está correto.";
+                msg.style.background = "#f8d7da"; msg.style.color = "#721c24";
+            });
         };
 
         document.getElementById('btn-login').onclick = () => {
             const email = document.getElementById('login-email').value;
             const pass = document.getElementById('login-pass').value;
             signInWithEmailAndPassword(auth, email, pass).then(u => {
-                if(!u.user.emailVerified) { alert("Confirme seu e-mail antes de entrar!"); signOut(auth); }
-            }).catch(e => document.getElementById('auth-msg').innerText = "Credenciais inválidas.");
+                if(!u.user.emailVerified) { alert("Confirme seu e-mail antes de acessar!"); signOut(auth); }
+            }).catch(e => document.getElementById('auth-msg').innerText = "Usuário ou senha inválidos.");
         };
 
         document.getElementById('btn-signup').onclick = () => {
             const email = document.getElementById('login-email').value;
             const pass = document.getElementById('login-pass').value;
             createUserWithEmailAndPassword(auth, email, pass).then(u => {
-                sendEmailVerification(u.user); alert("Verifique seu e-mail para ativar a conta!"); signOut(auth);
-            }).catch(e => alert(e.message));
+                sendEmailVerification(u.user); alert("E-mail de ativação enviado! Verifique sua caixa."); signOut(auth);
+            }).catch(e => alert("Erro ao criar conta: " + e.message));
         };
 
         onAuthStateChanged(auth, (user) => {
@@ -230,17 +252,14 @@
             }
         });
 
-        // --- LÓGICA DE DADOS ---
+        // --- SINCRONIZAÇÃO E RENDERIZAÇÃO ---
 
         function syncData(uid) {
             const q = query(collection(db, "ideas"), where("uid", "==", uid));
             onSnapshot(q, (snapshot) => {
                 allIdeas = [];
                 snapshot.forEach(doc => allIdeas.push({id: doc.id, ...doc.data()}));
-                updateStats();
-                updateTagCloud();
-                renderAll();
-                if(document.getElementById('dashboard-view-container').style.display === 'block') updateDashboard();
+                updateStats(); updateTagCloud(); renderAll(); updateDashboard();
             });
         }
 
@@ -277,7 +296,7 @@
             });
         }
 
-        // --- CRUD COMPLETO ---
+        // --- OPERAÇÕES (CRUD) ---
 
         document.getElementById('btn-save').onclick = async () => {
             const id = document.getElementById('edit-id').value;
@@ -293,11 +312,11 @@
                 prio: document.getElementById('idea-prio').value,
                 updatedAt: Date.now()
             };
-            if(!data.title) return alert("Título obrigatório!");
+            if(!data.title) return alert("Dê um título para sua ideia!");
             if(id) {
                 await updateDoc(doc(db, "ideas", id), data);
                 document.getElementById('edit-id').value = "";
-                document.getElementById('btn-save').innerText = "Lançar Insight";
+                document.getElementById('btn-save').innerText = "Salvar Insight";
             } else {
                 await addDoc(collection(db, "ideas"), { ...data, pinned: false, checklist: [], createdAt: Date.now() });
             }
@@ -319,7 +338,7 @@
             window.scrollTo({top: 0, behavior: 'smooth'});
         };
 
-        window.deleteIdea = id => confirm("Deseja apagar este projeto?") && deleteDoc(doc(db, "ideas", id));
+        window.deleteIdea = id => confirm("Excluir permanentemente?") && deleteDoc(doc(db, "ideas", id));
 
         // --- MODO FOCO E CHECKLIST ---
 
@@ -327,13 +346,13 @@
             const i = allIdeas.find(x => x.id === id);
             document.getElementById('focus-content').innerHTML = `
                 <span onclick="window.closeFocus()" style="float:right; cursor:pointer; font-size:1.5rem;">×</span>
-                <h2 style="margin:0;">${i.title}</h2>
-                <div style="display:flex; gap:10px; margin:15px 0;">
+                <h2 style="margin:0 0 10px 0;">${i.title}</h2>
+                <div style="display:flex; gap:10px; margin-bottom:20px;">
                     <button class="btn-gpj" style="padding:5px 12px; font-size:0.6rem; width:auto;" onclick="window.togglePin('${i.id}', ${i.pinned})">${i.pinned?'DESFIXAR':'FIXAR 📌'}</button>
-                    <button class="btn-gpj" style="padding:5px 12px; font-size:0.6rem; width:auto; background:#10b981;" onclick="window.exportPDF('${i.id}')">GERAR PDF 📄</button>
-                    ${i.link ? `<a href="${i.link}" target="_blank" style="padding:5px 12px; font-size:0.6rem; background:var(--bg); border-radius:8px; text-decoration:none; color:var(--primary); font-weight:900; border:1px solid var(--border);">ABRIR LINK 🔗</a>` : ''}
+                    <button class="btn-gpj" style="padding:5px 12px; font-size:0.6rem; width:auto; background:#10b981;" onclick="window.exportPDF('${i.id}')">PDF 📄</button>
+                    ${i.link ? `<a href="${i.link}" target="_blank" style="padding:5px 12px; font-size:0.6rem; background:var(--bg); border-radius:8px; text-decoration:none; color:var(--primary); font-weight:900; border:1px solid var(--border);">LINK 🔗</a>` : ''}
                 </div>
-                <div style="background:rgba(0,0,0,0.03); padding:20px; border-radius:15px; white-space:pre-wrap; margin-bottom:20px; font-size:0.9rem; line-height:1.6;">${i.desc || 'Nenhuma nota registrada.'}</div>
+                <div style="background:rgba(0,0,0,0.03); padding:20px; border-radius:15px; white-space:pre-wrap; margin-bottom:20px; font-size:0.9rem;">${i.desc || 'Sem detalhes adicionais.'}</div>
                 
                 <h4 style="margin-bottom:10px;">Plano de Ação</h4>
                 <div id="check-list">
@@ -346,7 +365,7 @@
                     `).join('')}
                 </div>
                 <div style="display:flex; gap:8px; margin-top:15px;">
-                    <input type="text" id="nt" placeholder="Adicionar tarefa..." style="flex:1;">
+                    <input type="text" id="nt" placeholder="Nova tarefa..." style="flex:1;">
                     <button class="btn-gpj" onclick="window.addTask('${i.id}')" style="width:auto; padding:0 20px;">+</button>
                 </div>
             `;
@@ -371,7 +390,7 @@
         };
         window.togglePin = async (id, cur) => { await updateDoc(doc(db, "ideas", id), { pinned: !cur }); window.openFocus(id); };
 
-        // --- DASHBOARD E PDF ---
+        // --- DASHBOARD E EXPORTAÇÃO ---
 
         function updateDashboard() {
             const vals = { pendente: 0, andamento: 0, concluida: 0 };
@@ -379,7 +398,7 @@
             document.getElementById('dash-total-money').innerText = `R$ ${Object.values(vals).reduce((a,b)=>a+b,0).toLocaleString('pt-BR')}`;
             if(financeChart) financeChart.destroy();
             if(statusChart) statusChart.destroy();
-            financeChart = new Chart(document.getElementById('financeChart'), { type: 'bar', data: { labels:['Pendente','Curso','Feito'], datasets:[{label:'Volume Financeiro R$', data:[vals.pendente, vals.andamento, vals.concluida], backgroundColor:'#6366f1'}]} });
+            financeChart = new Chart(document.getElementById('financeChart'), { type: 'bar', data: { labels:['Pendente','Curso','Feito'], datasets:[{label:'Valores R$', data:[vals.pendente, vals.andamento, vals.concluida], backgroundColor:'#6366f1'}]} });
             statusChart = new Chart(document.getElementById('statusChart'), { type: 'doughnut', data: { labels:['Pendente','Curso','Feito'], datasets:[{data:[allIdeas.filter(x=>x.status==='pendente').length, allIdeas.filter(x=>x.status==='andamento').length, allIdeas.filter(x=>x.status==='concluida').length], backgroundColor:['#64748b','#f59e0b','#10b981']}]} });
         }
 
@@ -387,14 +406,14 @@
             const i = allIdeas.find(x => x.id === id);
             const { jsPDF } = window.jspdf; const docPdf = new jsPDF();
             docPdf.setFontSize(22); docPdf.text("GPJ ENTERPRISES - RELATÓRIO", 10, 20);
-            docPdf.setFontSize(16); docPdf.text(`Projeto: ${i.title}`, 10, 35);
-            docPdf.setFontSize(12); docPdf.text(`Status: ${i.status.toUpperCase()} | Valor: R$ ${i.value}`, 10, 45);
+            docPdf.setFontSize(16); docPdf.text(`Insight: ${i.title}`, 10, 35);
+            docPdf.setFontSize(12); docPdf.text(`Status: ${i.status.toUpperCase()} | Valor Estimado: R$ ${i.value}`, 10, 45);
             docPdf.text("Descrição:", 10, 60);
-            docPdf.setFontSize(10); docPdf.text(docPdf.splitTextToSize(i.desc || "Sem descrição.", 180), 10, 70);
-            docPdf.save(`GPJ_Relatorio_${i.title}.pdf`);
+            docPdf.setFontSize(10); docPdf.text(docPdf.splitTextToSize(i.desc || "Sem descrição registrada.", 180), 10, 70);
+            docPdf.save(`Relatorio_${i.title}.pdf`);
         };
 
-        // --- UTILITÁRIOS ---
+        // --- UTILITÁRIOS E NAVEGAÇÃO ---
 
         function updateStats() {
             const s = { pendente: 0, andamento: 0, concluida: 0 };
@@ -413,7 +432,7 @@
         window.closeFocus = () => document.getElementById('focus-modal').style.display='none';
         document.getElementById('btn-logout').onclick = () => signOut(auth);
         
-        // TABS
+        // Navegação entre Tabs
         document.getElementById('tab-list-btn').onclick = () => { switchTab('list-view-container', 'tab-list-btn'); };
         document.getElementById('tab-kanban-btn').onclick = () => { switchTab('kanban-view-container', 'tab-kanban-btn'); };
         document.getElementById('tab-dash-btn').onclick = () => { switchTab('dashboard-view-container', 'tab-dash-btn'); updateDashboard(); };
@@ -424,10 +443,6 @@
             document.getElementById(btnId).classList.add('active');
         }
         document.getElementById('search-input').onkeyup = renderAll;
-
-        // PWA
-        if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
-        const lp = document.createElement('link'); lp.rel='manifest'; lp.href='manifest.json'; document.head.appendChild(lp);
     </script>
 </body>
 </html>
