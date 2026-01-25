@@ -1,10 +1,10 @@
 
-     <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IdeaFlow Pro v3.6 | GPJ Enterprises</title>
+    <title>IdeaFlow Pro v3.1 | GPJ Enterprises</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
@@ -19,46 +19,30 @@
             --bg: #0f172a; --sidebar-bg: #1e293b; --card-bg: #1e293b;
             --text: #f1f5f9; --text-muted: #94a3b8; --border: #334155;
         }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; min-height: 100vh; transition: 0.3s; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; min-height: 100vh; transition: 0.3s; overflow-x: hidden; }
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
-        .modal-card { background: var(--sidebar-bg); padding: 2rem; border-radius: 20px; width: 100%; max-width: 500px; position: relative; max-height: 90vh; overflow-y: auto; }
+        .modal-card { background: var(--sidebar-bg); padding: 2.5rem; border-radius: 20px; width: 100%; max-width: 550px; position: relative; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
         #main-app { display: none; width: 100%; }
         .sidebar { width: 350px; background: var(--sidebar-bg); padding: 1.5rem; border-right: 1px solid var(--border); height: 100vh; position: sticky; top: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; box-sizing: border-box; }
         .main-content { flex: 1; padding: 2rem; box-sizing: border-box; overflow-y: auto; height: 100vh; }
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 5px; }
         .stat-item { background: rgba(0,0,0,0.03); padding: 10px; border-radius: 12px; text-align: center; border: 1px solid var(--border); }
-        .stat-val { display: block; font-weight: 900; color: var(--primary); }
-        .input-group { display: flex; flex-direction: column; gap: 10px; background: rgba(0,0,0,0.03); padding: 15px; border-radius: 15px; border: 1px solid var(--border); }
-        input, select, textarea { padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--card-bg); color: var(--text); }
-        .view-tabs { display: flex; background: rgba(0,0,0,0.05); padding: 5px; border-radius: 12px; }
-        .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 800; color: var(--text-muted); background: transparent; }
-        .tab-btn.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-
-        /* CORREÇÃO KANBAN HORIZONTAL */
-        .kanban-container { 
-            display: flex !important; /* Força horizontal */
-            gap: 20px; 
-            overflow-x: auto; 
-            padding-bottom: 20px;
-            align-items: flex-start;
-        }
-        .kanban-column { 
-            background: rgba(0,0,0,0.02); 
-            border-radius: 18px; 
-            padding: 15px; 
-            min-width: 300px; /* Garante largura das colunas */
-            min-height: 70vh; 
-            border: 2px solid transparent;
-            transition: 0.2s;
-        }
-        .kanban-column.drag-over { border-color: var(--primary); background: rgba(99, 102, 241, 0.05); }
-        .kanban-column h3 { font-size: 0.8rem; text-transform: uppercase; text-align: center; color: var(--text-muted); }
-
-        .idea-card { background: var(--card-bg); padding: 1rem; margin-bottom: 12px; border-radius: 12px; border: 1px solid var(--border); cursor: grab; position: relative; }
-        .idea-card:active { cursor: grabbing; }
-        .prio-indicator { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 12px 0 0 12px; }
-        .btn-gpj { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 800; cursor: pointer; text-transform: uppercase; width: 100%; }
-        .tag-pill { font-size: 0.65rem; padding: 4px 10px; border-radius: 20px; background: rgba(99,102,241,0.1); color: var(--primary); cursor: pointer; font-weight: 700; }
+        .stat-val { display: block; font-weight: 900; font-size: 1.1rem; color: var(--primary); }
+        .stat-label { font-size: 0.6rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; margin-top: 3px; }
+        .input-group { display: flex; flex-direction: column; gap: 10px; background: rgba(0,0,0,0.03); padding: 20px; border-radius: 15px; border: 1px solid var(--border); }
+        .row-group { display: flex; gap: 8px; flex-wrap: wrap; }
+        input, select, textarea { padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--card-bg); color: var(--text); font-size: 0.9rem; transition: 0.2s; flex: 1; min-width: 100px; }
+        .view-tabs { display: flex; background: rgba(0,0,0,0.05); padding: 5px; border-radius: 12px; margin-bottom: 5px; }
+        .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-size: 0.75rem; font-weight: 800; color: var(--text-muted); background: transparent; transition: 0.3s; }
+        .tab-btn.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .kanban-container { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .kanban-column { background: rgba(0,0,0,0.02); border-radius: 18px; padding: 15px; min-height: 80vh; border: 2px dashed transparent; }
+        .idea-card { background: var(--card-bg); padding: 1.2rem; margin-bottom: 15px; border-radius: 15px; border: 1px solid var(--border); position: relative; transition: 0.2s; cursor: pointer; }
+        .prio-indicator { position: absolute; left: 0; top: 0; bottom: 0; width: 5px; border-radius: 15px 0 0 15px; }
+        .btn-gpj { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 10px; font-weight: 800; cursor: pointer; text-transform: uppercase; width: 100%; }
+        .check-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; background: rgba(0,0,0,0.02); padding: 10px; border-radius: 8px; }
+        .check-done { text-decoration: line-through; opacity: 0.5; }
+        .tag-pill { font-size: 0.65rem; padding: 5px 12px; border-radius: 20px; background: rgba(99,102,241,0.1); color: var(--primary); cursor: pointer; font-weight: 700; }
         .tag-pill.active { background: var(--primary); color: white; }
     </style>
 </head>
@@ -67,77 +51,84 @@
     <div id="focus-modal" class="overlay" style="display:none;"><div class="modal-card" id="focus-content"></div></div>
 
     <div id="auth-container" class="overlay">
-        <div class="modal-card" style="max-width:350px; text-align:center;">
-            <div style="background: var(--primary); width: 50px; height: 50px; border-radius: 12px; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900;">IF</div>
-            <h2>GPJ IdeaFlow</h2>
-            <input type="email" id="login-email" placeholder="E-mail" style="width:100%; margin-bottom:10px; box-sizing: border-box;">
-            <input type="password" id="login-pass" placeholder="Senha" style="width:100%; margin-bottom:15px; box-sizing: border-box;">
+        <div class="modal-card" style="max-width:400px; text-align:center;">
+            <div style="background: var(--primary); width: 60px; height: 60px; border-radius: 15px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: 900;">IF</div>
+            <h2 style="color:var(--text); margin:0;">Login IdeaFlow</h2>
+            <p style="font-size:0.7rem; letter-spacing:1px; color:var(--text-muted); margin-bottom:2rem;">GPJ ENTERPRISES SECURE ACCESS</p>
             
-            <button type="button" onclick="window.resetPassword()" style="background:#fff3cd; border:1px solid #ffeeba; color:#856404; padding:8px; border-radius:8px; width:100%; font-size:0.7rem; font-weight:bold; cursor:pointer; margin-bottom:15px;">🔑 RECUPERAR SENHA</button>
+            <input type="email" id="login-email" placeholder="Seu E-mail" style="width:100%; margin-bottom:12px; box-sizing: border-box; border: 2px solid var(--border);">
+            <input type="password" id="login-pass" placeholder="Sua Senha" style="width:100%; margin-bottom:15px; box-sizing: border-box; border: 2px solid var(--border);">
             
-            <button class="btn-gpj" id="btn-login" style="margin-bottom:10px;">Entrar</button>
-            <button class="btn-gpj" id="btn-signup" style="background:none; color:var(--text); border:1px solid var(--border);">Criar Conta</button>
-            <p id="auth-msg" style="font-size:0.7rem; margin-top:10px;"></p>
+            <button type="button" onclick="window.resetPassword()" style="background:none; border:none; color:var(--primary); font-size:0.75rem; cursor:pointer; font-weight:bold; margin-bottom:20px; text-decoration:underline;">Esqueci minha senha</button>
+            
+            <button class="btn-gpj" id="btn-login" style="margin-bottom:10px;">Acessar Painel</button>
+            <button class="btn-gpj" id="btn-signup" style="background:none; color:var(--text); border:1px solid var(--border);">Criar Nova Conta</button>
+            
+            <p id="auth-msg" style="font-size:0.8rem; margin-top:20px; font-weight:bold;"></p>
         </div>
     </div>
 
     <div id="main-app">
         <aside class="sidebar">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-weight:900; color:var(--primary);">IdeaFlow GPJ</span>
-                <button onclick="window.toggleTheme()">🌙</button>
+                <div>
+                    <span style="font-weight:900; color:var(--primary); font-size:1.4rem; letter-spacing:-1px;">IdeaFlow</span>
+                    <p style="margin:0; font-size:0.5rem; color:var(--text-muted); font-weight:700; letter-spacing:1px;">GPJ ENTERPRISES</p>
+                </div>
+                <button onclick="window.toggleTheme()" style="background:none; border:none; cursor:pointer; font-size:1.2rem;">🌙</button>
             </div>
+
             <div class="stats-grid">
-                <div class="stat-item"><span class="stat-val" id="count-pendente">0</span><small>Pendente</small></div>
-                <div class="stat-item"><span class="stat-val" id="count-andamento">0</span><small>Curso</small></div>
-                <div class="stat-item"><span class="stat-val" id="count-concluida">0</span><small>Feito</small></div>
+                <div class="stat-item"><span class="stat-val" id="count-pendente">0</span><span class="stat-label">Pend</span></div>
+                <div class="stat-item"><span class="stat-val" id="count-andamento">0</span><span class="stat-label">Curso</span></div>
+                <div class="stat-item"><span class="stat-val" id="count-concluida">0</span><span class="stat-label">Feito</span></div>
             </div>
+
             <div class="view-tabs">
                 <button class="tab-btn active" id="tab-list-btn">LISTA</button>
                 <button class="tab-btn" id="tab-kanban-btn">KANBAN</button>
-                <button class="tab-btn" id="tab-dash-btn">DASH</button>
+                <button class="tab-btn" id="tab-dash-btn">DASHBOARD</button>
             </div>
+
             <div class="input-group">
                 <input type="hidden" id="edit-id">
-                <input type="text" id="idea-title" placeholder="Título">
-                <textarea id="idea-desc" placeholder="Notas..."></textarea>
-                <div style="display:flex; gap:5px;">
-                    <input type="number" id="idea-val" placeholder="R$" style="width:50%;">
-                    <input type="text" id="idea-tag" placeholder="Tag" style="width:50%;">
+                <input type="text" id="idea-title" placeholder="Título da Ideia">
+                <textarea id="idea-desc" placeholder="Descrição detalhada..."></textarea>
+                <div class="row-group">
+                    <input type="number" id="idea-val" placeholder="Valor R$">
+                    <input type="text" id="idea-tag" placeholder="Tag">
                 </div>
-                <select id="idea-prio">
-                    <option value="baixa">Baixa</option>
-                    <option value="media">Média</option>
-                    <option value="alta">Alta</option>
-                </select>
                 <select id="idea-status">
                     <option value="pendente">Pendente</option>
                     <option value="andamento">Em Curso</option>
                     <option value="concluida">Concluída</option>
                 </select>
-                <button class="btn-gpj" id="btn-save">Salvar Insight</button>
+                <button class="btn-gpj" id="btn-save">Salvar Projeto</button>
             </div>
-            <div id="tag-filters" style="display:flex; flex-wrap:wrap; gap:5px;"></div>
-            <button id="btn-logout" style="margin-top:auto; background:none; border:none; color:var(--danger); cursor:pointer; font-weight:bold;">SAIR</button>
+            
+            <input type="text" id="search-input" placeholder="🔍 Buscar..." style="background:rgba(0,0,0,0.05); border:none; width:100%; box-sizing:border-box; padding:12px; border-radius:10px;">
+            <div id="tag-filters" style="display:flex; flex-wrap:wrap; gap:5px; margin-top:10px;"></div>
+
+            <div style="margin-top:auto; padding-top:20px; border-top:1px solid var(--border);">
+                <button id="btn-logout" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.7rem; font-weight:700;">SAIR DO SISTEMA</button>
+            </div>
         </aside>
 
         <main class="main-content">
-            <div id="list-view-container"><div id="ideasList"></div></div>
+            <div id="list-view-container" style="display:block;"><div id="ideasList" style="max-width:850px; margin:0 auto;"></div></div>
             <div id="kanban-view-container" class="kanban-container" style="display:none;">
-                <div class="kanban-column" id="col-pendente" ondrop="drop(event, 'pendente')" ondragover="allowDrop(event)">
-                    <h3>Pendente</h3><div id="k-pendente"></div>
-                </div>
-                <div class="kanban-column" id="col-andamento" ondrop="drop(event, 'andamento')" ondragover="allowDrop(event)">
-                    <h3>Em Curso</h3><div id="k-andamento"></div>
-                </div>
-                <div class="kanban-column" id="col-concluida" ondrop="drop(event, 'concluida')" ondragover="allowDrop(event)">
-                    <h3>Concluída</h3><div id="k-concluida"></div>
-                </div>
+                <div class="kanban-column" data-status="pendente"><h3>Pendente</h3><div id="k-pendente"></div></div>
+                <div class="kanban-column" data-status="andamento"><h3>Em Curso</h3><div id="k-andamento"></div></div>
+                <div class="kanban-column" data-status="concluida"><h3>Concluída</h3><div id="k-concluida"></div></div>
             </div>
             <div id="dashboard-view-container" style="display:none;">
-                <h1 id="dash-total-money" style="color:var(--success); text-align:center;">R$ 0,00</h1>
+                <div class="dash-card" style="background:var(--card-bg); padding:20px; border-radius:15px; border:1px solid var(--border); margin-bottom:20px;">
+                    <span style="font-size:0.7rem; color:var(--text-muted); font-weight:bold;">VALOR TOTAL EM CARTEIRA</span>
+                    <div id="dash-total-money" style="font-size:2.5rem; font-weight:900; color:var(--success);">R$ 0,00</div>
+                </div>
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-                    <canvas id="financeChart"></canvas><canvas id="statusChart"></canvas>
+                    <div class="dash-card" style="background:var(--card-bg); padding:20px; border-radius:15px; border:1px solid var(--border);"><canvas id="financeChart"></canvas></div>
+                    <div class="dash-card" style="background:var(--card-bg); padding:20px; border-radius:15px; border:1px solid var(--border);"><canvas id="statusChart"></canvas></div>
                 </div>
             </div>
         </main>
@@ -165,17 +156,20 @@
         let financeChart = null;
         let statusChart = null;
 
-        // --- AUTH ---
+        // Lógica de Redefinição
         window.resetPassword = () => {
             const email = document.getElementById('login-email').value;
-            if(!email) return alert("Digite o e-mail");
-            sendPasswordResetEmail(auth, email).then(() => alert("E-mail de recuperação enviado!")).catch(e => alert("Erro ao enviar."));
+            if(!email) return alert("Digite seu e-mail primeiro!");
+            sendPasswordResetEmail(auth, email).then(() => alert("E-mail de redefinição enviado!")).catch(e => alert("Erro: " + e.message));
         };
 
+        // Resto do código da v3.1 exatamente igual
         document.getElementById('btn-login').onclick = () => {
             const email = document.getElementById('login-email').value;
             const pass = document.getElementById('login-pass').value;
-            signInWithEmailAndPassword(auth, email, pass).catch(e => alert("Erro no login"));
+            signInWithEmailAndPassword(auth, email, pass).then(u => {
+                if(!u.user.emailVerified) { alert("Verifique seu e-mail!"); signOut(auth); }
+            }).catch(e => alert("Erro no login"));
         };
 
         document.getElementById('btn-signup').onclick = () => {
@@ -183,7 +177,7 @@
             const pass = document.getElementById('login-pass').value;
             createUserWithEmailAndPassword(auth, email, pass).then(u => {
                 sendEmailVerification(u.user); alert("Confirme seu e-mail!"); signOut(auth);
-            });
+            }).catch(e => alert(e.message));
         };
 
         onAuthStateChanged(auth, (user) => {
@@ -197,59 +191,36 @@
             }
         });
 
-        // --- DRAG AND DROP ---
-        window.allowDrop = (ev) => {
-            ev.preventDefault();
-            ev.currentTarget.classList.add('drag-over');
-        };
-
-        window.drag = (ev, id) => {
-            ev.dataTransfer.setData("text", id);
-        };
-
-        window.drop = async (ev, newStatus) => {
-            ev.preventDefault();
-            ev.currentTarget.classList.remove('drag-over');
-            const id = ev.dataTransfer.getData("text");
-            await updateDoc(doc(db, "ideas", id), { status: newStatus });
-        };
-
-        // --- CORE LOGIC ---
         function syncData(uid) {
             const q = query(collection(db, "ideas"), where("uid", "==", uid));
             onSnapshot(q, (snapshot) => {
                 allIdeas = [];
                 snapshot.forEach(doc => allIdeas.push({id: doc.id, ...doc.data()}));
-                renderAll();
-                updateStats();
-                updateDashboard();
+                updateStats(); updateTagCloud(); renderAll(); updateDashboard();
             });
         }
 
         function renderAll() {
-            let filtered = allIdeas.filter(i => !activeTagFilter || i.tag === activeTagFilter);
-            
+            const term = document.getElementById('search-input').value.toLowerCase();
+            let filtered = allIdeas.filter(i => {
+                const matchSearch = i.title.toLowerCase().includes(term);
+                const matchTag = !activeTagFilter || i.tag === activeTagFilter;
+                return matchSearch && matchTag;
+            });
+
             document.getElementById('ideasList').innerHTML = filtered.map(i => `
                 <div class="idea-card" onclick="window.openFocus('${i.id}')">
-                    <div class="prio-indicator" style="background:${i.prio==='alta'?'#ef4444':i.prio==='media'?'#f59e0b':'#10b981'}"></div>
-                    <small>#${i.tag}</small>
-                    <strong style="display:block;">${i.title}</strong>
-                    <div style="color:var(--success); font-weight:bold;">R$ ${parseFloat(i.value||0).toLocaleString('pt-BR')}</div>
+                    <div class="prio-indicator" style="background:#10b981"></div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.6rem;">
+                        <span>#${i.tag}</span>
+                    </div>
+                    <strong style="display:block; margin:5px 0;">${i.title}</strong>
+                    <div style="font-size:0.75rem; font-weight:bold; color:var(--success)">R$ ${parseFloat(i.value||0).toLocaleString('pt-BR')}</div>
                 </div>
             `).join('');
-
-            ['pendente', 'andamento', 'concluida'].forEach(s => {
-                document.getElementById(`k-${s}`).innerHTML = filtered.filter(x => x.status === s).map(i => `
-                    <div class="idea-card" draggable="true" ondragstart="drag(event, '${i.id}')" onclick="window.openFocus('${i.id}')">
-                        <div class="prio-indicator" style="background:${i.prio==='alta'?'#ef4444':i.prio==='media'?'#f59e0b':'#10b981'}"></div>
-                        <strong style="font-size:0.8rem;">${i.title}</strong>
-                    </div>
-                `).join('');
-            });
         }
 
         document.getElementById('btn-save').onclick = async () => {
-            const id = document.getElementById('edit-id').value;
             const data = {
                 uid: auth.currentUser.uid,
                 title: document.getElementById('idea-title').value,
@@ -257,38 +228,11 @@
                 tag: document.getElementById('idea-tag').value || 'Geral',
                 value: document.getElementById('idea-val').value || 0,
                 status: document.getElementById('idea-status').value,
-                prio: document.getElementById('idea-prio').value,
                 createdAt: Date.now()
             };
-            if(id) await updateDoc(doc(db, "ideas", id), data);
-            else await addDoc(collection(db, "ideas"), { ...data, checklist: [] });
-            document.getElementById('edit-id').value = "";
+            if(!data.title) return;
+            await addDoc(collection(db, "ideas"), data);
             ['idea-title','idea-desc','idea-val','idea-tag'].forEach(f => document.getElementById(f).value = '');
-        };
-
-        window.openFocus = id => {
-            const i = allIdeas.find(x => x.id === id);
-            document.getElementById('focus-content').innerHTML = `
-                <span onclick="document.getElementById('focus-modal').style.display='none'" style="float:right; cursor:pointer;">×</span>
-                <h2>${i.title}</h2>
-                <p style="background:rgba(0,0,0,0.03); padding:15px; border-radius:10px;">${i.desc}</p>
-                <div style="display:flex; gap:10px;">
-                    <button class="btn-gpj" style="background:#10b981;" onclick="window.exportPDF('${i.id}')">PDF</button>
-                    <button class="btn-gpj" style="background:var(--danger);" onclick="window.deleteIdea('${i.id}')">EXCLUIR</button>
-                </div>
-            `;
-            document.getElementById('focus-modal').style.display = 'flex';
-        };
-
-        window.deleteIdea = async id => { if(confirm("Apagar?")) { await deleteDoc(doc(db, "ideas", id)); document.getElementById('focus-modal').style.display='none'; } };
-
-        window.exportPDF = (id) => {
-            const i = allIdeas.find(x => x.id === id);
-            const { jsPDF } = window.jspdf; const docPdf = new jsPDF();
-            docPdf.text(`Projeto: ${i.title}`, 10, 20);
-            docPdf.text(`Valor: R$ ${i.value}`, 10, 30);
-            docPdf.text(`Notas: ${i.desc}`, 10, 40);
-            docPdf.save(`GPJ_${i.title}.pdf`);
         };
 
         function updateStats() {
@@ -299,27 +243,25 @@
             document.getElementById('count-concluida').innerText = s.concluida;
         }
 
+        function updateTagCloud() {
+            const tags = [...new Set(allIdeas.map(i => i.tag))];
+            document.getElementById('tag-filters').innerHTML = `<span class="tag-pill active" onclick="window.setTagFilter(null)">Todas</span>` + 
+                tags.map(t => `<span class="tag-pill" onclick="window.setTagFilter('${t}')">${t}</span>`).join('');
+        }
+
         function updateDashboard() {
             const vals = { pendente: 0, andamento: 0, concluida: 0 };
             allIdeas.forEach(i => vals[i.status] += parseFloat(i.value||0));
             document.getElementById('dash-total-money').innerText = `R$ ${Object.values(vals).reduce((a,b)=>a+b,0).toLocaleString('pt-BR')}`;
             if(financeChart) financeChart.destroy();
-            financeChart = new Chart(document.getElementById('financeChart'), { type: 'bar', data: { labels:['Pendente','Curso','Feito'], datasets:[{label:'R$', data:[vals.pendente, vals.andamento, vals.concluida], backgroundColor:'#6366f1'}]} });
-        }
-
-        // TABS
-        document.getElementById('tab-list-btn').onclick = () => switchTab('list-view-container', 'tab-list-btn');
-        document.getElementById('tab-kanban-btn').onclick = () => switchTab('kanban-view-container', 'tab-kanban-btn');
-        document.getElementById('tab-dash-btn').onclick = () => switchTab('dashboard-view-container', 'tab-dash-btn');
-        function switchTab(v, b) {
-            ['list-view-container','kanban-view-container','dashboard-view-container'].forEach(x => document.getElementById(x).style.display='none');
-            ['tab-list-btn','tab-kanban-btn','tab-dash-btn'].forEach(x => document.getElementById(x).classList.remove('active'));
-            document.getElementById(v).style.display = v === 'kanban-view-container' ? 'flex' : 'block';
-            document.getElementById(b).classList.add('active');
+            financeChart = new Chart(document.getElementById('financeChart'), { type: 'bar', data: { labels:['Pendente','Curso','Feito'], datasets:[{label:'Valores R$', data:[vals.pendente, vals.andamento, vals.concluida], backgroundColor:'#6366f1'}]} });
         }
 
         window.toggleTheme = () => document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
         document.getElementById('btn-logout').onclick = () => signOut(auth);
+        document.getElementById('tab-list-btn').onclick = () => { document.getElementById('list-view-container').style.display='block'; document.getElementById('kanban-view-container').style.display='none'; document.getElementById('dashboard-view-container').style.display='none'; };
+        document.getElementById('tab-kanban-btn').onclick = () => { document.getElementById('list-view-container').style.display='none'; document.getElementById('kanban-view-container').style.display='grid'; document.getElementById('dashboard-view-container').style.display='none'; };
+        document.getElementById('tab-dash-btn').onclick = () => { document.getElementById('list-view-container').style.display='none'; document.getElementById('kanban-view-container').style.display='none'; document.getElementById('dashboard-view-container').style.display='block'; };
     </script>
 </body>
 </html>
