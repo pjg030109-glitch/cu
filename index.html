@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IdeaFlow Pro v3.0 | GPJ Execution Master</title>
+    <title>IdeaFlow Pro v3.1 | GPJ Dashboard Edition</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <style>
         :root {
             --primary: #6366f1; --primary-dark: #4f46e5; --danger: #ef4444;
@@ -27,9 +29,9 @@
         
         /* Sidebar */
         .sidebar { width: 350px; background: var(--sidebar-bg); padding: 1.5rem; border-right: 1px solid var(--border); height: 100vh; position: sticky; top: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; box-sizing: border-box; }
-        .main-content { flex: 1; padding: 2rem; box-sizing: border-box; }
+        .main-content { flex: 1; padding: 2rem; box-sizing: border-box; overflow-y: auto; height: 100vh; }
 
-        /* Stats Grid */
+        /* Stats Grid Sidebar */
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 5px; }
         .stat-item { background: rgba(0,0,0,0.03); padding: 10px; border-radius: 12px; text-align: center; border: 1px solid var(--border); }
         .stat-val { display: block; font-weight: 900; font-size: 1.1rem; color: var(--primary); }
@@ -38,7 +40,6 @@
         /* Inputs */
         .input-group { display: flex; flex-direction: column; gap: 10px; background: rgba(0,0,0,0.03); padding: 20px; border-radius: 15px; border: 1px solid var(--border); }
         .row-group { display: flex; gap: 8px; flex-wrap: wrap; }
-        
         input, select, textarea { padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--card-bg); color: var(--text); font-size: 0.9rem; transition: 0.2s; flex: 1; min-width: 100px; }
         input:focus, textarea:focus { outline: none; border-color: var(--primary); ring: 2px solid var(--primary); }
         textarea { min-height: 80px; resize: vertical; width: 100%; box-sizing: border-box; }
@@ -48,27 +49,33 @@
         .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-size: 0.75rem; font-weight: 800; color: var(--text-muted); background: transparent; transition: 0.3s; }
         .tab-btn.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
 
+        /* Views Containers */
+        #list-view-container, #kanban-view-container, #dashboard-view-container { display: none; }
+
         /* Kanban */
-        .kanban-container { display: none; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .kanban-container { grid-template-columns: repeat(3, 1fr); gap: 20px; }
         .kanban-column { background: rgba(0,0,0,0.02); border-radius: 18px; padding: 15px; min-height: 80vh; border: 2px dashed transparent; transition: 0.3s; }
         .kanban-column.drag-over { background: rgba(99, 102, 241, 0.1); border-color: var(--primary); }
         .kanban-column h3 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 15px; text-align: center; }
 
-        /* Cards */
+        /* Dashboard Styles */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .dash-card { background: var(--card-bg); padding: 20px; border-radius: 15px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .total-money { font-size: 2.5rem; font-weight: 900; color: var(--success); letter-spacing: -1px; margin: 10px 0; }
+        
+        /* Cards & Tags */
         .idea-card { background: var(--card-bg); padding: 1.2rem; margin-bottom: 15px; border-radius: 15px; border: 1px solid var(--border); position: relative; transition: 0.2s; cursor: grab; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         .idea-card:hover { border-color: var(--primary); transform: translateY(-2px); }
         .idea-card.dragging { opacity: 0.5; }
         .prio-indicator { position: absolute; left: 0; top: 0; bottom: 0; width: 5px; border-radius: 15px 0 0 15px; }
-
-        /* Tags & Badges */
         .tag-cloud { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
         .tag-pill { font-size: 0.65rem; padding: 5px 12px; border-radius: 20px; background: rgba(99, 102, 241, 0.1); color: var(--primary); cursor: pointer; font-weight: 700; border: 1px solid transparent; }
         .tag-pill.active { background: var(--primary); color: white; }
         .value-badge { color: var(--success); font-weight: 800; font-size: 0.8rem; margin-left: 8px; }
 
-        /* Checklist Styles */
-        .check-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; background: rgba(0,0,0,0.02); padding: 10px; border-radius: 8px; border: 1px solid transparent; transition: 0.2s; }
-        .check-item:hover { border-color: var(--border); background: var(--card-bg); }
+        /* Checklist */
+        .check-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; background: rgba(0,0,0,0.02); padding: 10px; border-radius: 8px; transition: 0.2s; }
+        .check-item:hover { background: var(--card-bg); }
         .check-text { flex: 1; font-size: 0.9rem; color: var(--text); }
         .check-done { text-decoration: line-through; opacity: 0.5; }
 
@@ -115,8 +122,9 @@
             </div>
 
             <div class="view-tabs">
-                <button class="tab-btn active" id="tab-list-btn">LISTA ESTRUTURADA</button>
-                <button class="tab-btn" id="tab-kanban-btn">FLUXO KANBAN</button>
+                <button class="tab-btn active" id="tab-list-btn">LISTA</button>
+                <button class="tab-btn" id="tab-kanban-btn">KANBAN</button>
+                <button class="tab-btn" id="tab-dash-btn">DASHBOARD</button>
             </div>
 
             <div class="input-group">
@@ -156,13 +164,40 @@
         </aside>
 
         <main class="main-content">
-            <div id="list-view-container">
+            <div id="list-view-container" style="display:block;">
+                <h2 style="margin-top:0;">Lista Estruturada</h2>
                 <div id="ideasList" style="max-width:850px; margin:0 auto;"></div>
             </div>
+
             <div id="kanban-view-container" class="kanban-container">
                 <div class="kanban-column" data-status="pendente"><h3>Pendente</h3><div id="k-pendente"></div></div>
                 <div class="kanban-column" data-status="andamento"><h3>Em Curso</h3><div id="k-andamento"></div></div>
                 <div class="kanban-column" data-status="concluida"><h3>Concluída</h3><div id="k-concluida"></div></div>
+            </div>
+
+            <div id="dashboard-view-container">
+                <h2 style="margin-top:0;">Visão Executiva</h2>
+                <div class="dashboard-grid">
+                    <div class="dash-card">
+                        <span style="text-transform:uppercase; color:var(--text-muted); font-size:0.7rem; letter-spacing:1px; font-weight:bold;">Valor Total em Pipeline</span>
+                        <div class="total-money" id="dash-total-money">R$ 0,00</div>
+                        <p style="margin:0; font-size:0.8rem; color:var(--text-muted);">Soma de todos os projetos ativos.</p>
+                    </div>
+                    
+                    <div class="dash-card">
+                        <span style="text-transform:uppercase; color:var(--text-muted); font-size:0.7rem; letter-spacing:1px; font-weight:bold;">Distribuição Financeira</span>
+                        <div style="height:200px; position:relative;">
+                            <canvas id="financeChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="dash-card">
+                        <span style="text-transform:uppercase; color:var(--text-muted); font-size:0.7rem; letter-spacing:1px; font-weight:bold;">Status dos Projetos</span>
+                        <div style="height:200px; position:relative; display:flex; justify-content:center;">
+                            <canvas id="statusChart"></canvas>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
@@ -186,6 +221,8 @@
         const db = getFirestore(app);
         let allIdeas = [];
         let activeTagFilter = null;
+        let financeChart = null;
+        let statusChart = null;
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -206,20 +243,104 @@
                 updateTagCloud();
                 updateStats();
                 renderAll();
-                // Atualizar modal se aberto
+                updateDashboard(); // Atualiza os gráficos
                 const openId = document.getElementById('current-focus-id')?.value;
                 if(openId) window.openFocus(openId);
             });
         }
 
+        // TABS LOGIC
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('#list-view-container, #kanban-view-container, #dashboard-view-container').forEach(c => c.style.display = 'none');
+            
+            if(tab === 'list') {
+                document.getElementById('tab-list-btn').classList.add('active');
+                document.getElementById('list-view-container').style.display = 'block';
+            } else if(tab === 'kanban') {
+                document.getElementById('tab-kanban-btn').classList.add('active');
+                document.getElementById('kanban-view-container').style.display = 'grid';
+            } else if(tab === 'dash') {
+                document.getElementById('tab-dash-btn').classList.add('active');
+                document.getElementById('dashboard-view-container').style.display = 'block';
+                updateDashboard(); // Garante renderização ao clicar na aba
+            }
+        }
+        document.getElementById('tab-list-btn').onclick = () => switchTab('list');
+        document.getElementById('tab-kanban-btn').onclick = () => switchTab('kanban');
+        document.getElementById('tab-dash-btn').onclick = () => switchTab('dash');
+
         function updateStats() {
             const stats = { pendente: 0, andamento: 0, concluida: 0 };
-            allIdeas.forEach(i => {
-                if(stats[i.status] !== undefined) stats[i.status]++;
-            });
+            allIdeas.forEach(i => { if(stats[i.status] !== undefined) stats[i.status]++; });
             document.getElementById('count-pendente').innerText = stats.pendente;
             document.getElementById('count-andamento').innerText = stats.andamento;
             document.getElementById('count-concluida').innerText = stats.concluida;
+        }
+
+        // NOVA FUNÇÃO: Lógica do Dashboard
+        function updateDashboard() {
+            // Cálculos
+            const vals = { pendente: 0, andamento: 0, concluida: 0 };
+            const counts = { pendente: 0, andamento: 0, concluida: 0 };
+            let totalMoney = 0;
+
+            allIdeas.forEach(i => {
+                const val = parseFloat(i.value) || 0;
+                if(vals[i.status] !== undefined) {
+                    vals[i.status] += val;
+                    counts[i.status]++;
+                    totalMoney += val;
+                }
+            });
+
+            // Atualiza KPI Texto
+            document.getElementById('dash-total-money').innerText = `R$ ${totalMoney.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+
+            // Configuração dos Gráficos
+            const ctxFin = document.getElementById('financeChart').getContext('2d');
+            const ctxStat = document.getElementById('statusChart').getContext('2d');
+            
+            // Destruir anteriores se existirem para não sobrepor
+            if(financeChart) financeChart.destroy();
+            if(statusChart) statusChart.destroy();
+
+            // Gráfico Financeiro (Barras)
+            financeChart = new Chart(ctxFin, {
+                type: 'bar',
+                data: {
+                    labels: ['Potencial (Pend)', 'Em Execução', 'Realizado (Conc)'],
+                    datasets: [{
+                        label: 'Valor R$',
+                        data: [vals.pendente, vals.andamento, vals.concluida],
+                        backgroundColor: ['#64748b', '#f59e0b', '#10b981'],
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: {display: false} }
+                }
+            });
+
+            // Gráfico de Status (Doughnut)
+            statusChart = new Chart(ctxStat, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pendente', 'Em Curso', 'Concluída'],
+                    datasets: [{
+                        data: [counts.pendente, counts.andamento, counts.concluida],
+                        backgroundColor: ['#64748b', '#f59e0b', '#10b981'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: {position: 'bottom'} }
+                }
+            });
         }
 
         function renderAll() {
@@ -241,8 +362,6 @@
             const colors = { alta: '#ef4444', media: '#f59e0b', baixa: '#10b981' };
             const deadlineInfo = i.deadline ? `<span style="font-size:0.6rem; background:rgba(0,0,0,0.05); padding:2px 5px; border-radius:4px; margin-top:5px; display:inline-block;">📅 ${new Date(i.deadline).toLocaleDateString('pt-BR')}</span>` : '';
             const valueDisplay = i.value && i.value > 0 ? `<span class="value-badge">R$ ${parseFloat(i.value).toLocaleString('pt-BR')}</span>` : '';
-            
-            // Lógica do Checklist no Card
             const tasksTotal = i.checklist?.length || 0;
             const tasksDone = i.checklist?.filter(t => t.done).length || 0;
             const progressDisplay = tasksTotal > 0 ? `<div style="font-size:0.6rem; color:var(--primary); font-weight:800; margin-top:4px;">✅ ${tasksDone}/${tasksTotal} TAREFAS</div>` : '';
@@ -252,18 +371,14 @@
                     <div class="prio-indicator" style="background:${colors[i.prio]}"></div>
                     <div style="display:flex; justify-content:space-between; align-items:start;">
                         <div style="flex:1">
-                            <div>
-                                <span style="font-size:0.6rem; color:var(--text-muted)">#${i.tag || 'Geral'} ${i.pinned ? '📌' : ''}</span>
-                                ${valueDisplay}
-                            </div>
+                            <div><span style="font-size:0.6rem; color:var(--text-muted)">#${i.tag || 'Geral'} ${i.pinned ? '📌' : ''}</span>${valueDisplay}</div>
                             <strong style="display:block; margin-top:2px; font-size:1rem;">${i.title}</strong>
-                            ${deadlineInfo}
-                            ${progressDisplay}
+                            ${deadlineInfo} ${progressDisplay}
                         </div>
                         <div onclick="event.stopPropagation()" style="display:flex; gap:8px; opacity:0.6;">
-                            <button onclick="window.pinIdea('${i.id}', ${i.pinned})" style="background:none; border:none; cursor:pointer; font-size:1rem;" title="Fixar">${i.pinned ? '📍' : '📌'}</button>
-                            <button onclick="window.editIdea('${i.id}')" style="background:none; border:none; cursor:pointer; font-size:1rem;" title="Editar">✏️</button>
-                            <button onclick="window.deleteIdea('${i.id}')" style="background:none; border:none; cursor:pointer; font-size:1rem;" title="Excluir">🗑️</button>
+                            <button onclick="window.pinIdea('${i.id}', ${i.pinned})" style="background:none; border:none; cursor:pointer; font-size:1rem;">${i.pinned ? '📍' : '📌'}</button>
+                            <button onclick="window.editIdea('${i.id}')" style="background:none; border:none; cursor:pointer; font-size:1rem;">✏️</button>
+                            <button onclick="window.deleteIdea('${i.id}')" style="background:none; border:none; cursor:pointer; font-size:1rem;">🗑️</button>
                         </div>
                     </div>
                 </div>
@@ -294,21 +409,6 @@
                 });
             });
         }
-
-        document.getElementById('tab-list-btn').onclick = () => {
-            document.getElementById('list-view-container').style.display = 'block';
-            document.getElementById('kanban-view-container').style.display = 'none';
-            document.getElementById('tab-list-btn').classList.add('active');
-            document.getElementById('tab-kanban-btn').classList.remove('active');
-        };
-
-        document.getElementById('tab-kanban-btn').onclick = () => {
-            document.getElementById('list-view-container').style.display = 'none';
-            document.getElementById('kanban-view-container').style.display = 'grid';
-            document.getElementById('tab-list-btn').classList.remove('active');
-            document.getElementById('tab-kanban-btn').classList.add('active');
-            setupDragAndDrop(); // Re-apply events
-        };
 
         window.editIdea = (id) => {
             const i = allIdeas.find(x => x.id === id);
@@ -351,7 +451,7 @@
                 await addDoc(collection(db, "ideas"), { ...data, pinned: false, checklist: [], createdAt: Date.now() });
                 showToast("Insight gravado!");
             }
-            resetForm();
+            ['idea-title','idea-desc','idea-val','idea-tag','idea-deadline','idea-link'].forEach(f => document.getElementById(f).value = '');
         };
 
         window.deleteIdea = id => confirm("Remover?") && deleteDoc(doc(db, "ideas", id));
@@ -362,10 +462,8 @@
             const tags = [...new Set(allIdeas.map(i => i.tag).filter(t => t))];
             document.getElementById('tag-filters').innerHTML = `<span class="tag-pill ${!activeTagFilter ? 'active' : ''}" onclick="window.setTagFilter(null)">Todas</span>` + tags.map(t => `<span class="tag-pill ${activeTagFilter === t ? 'active' : ''}" onclick="window.setTagFilter('${t}')">${t}</span>`).join('');
         }
-        function resetForm() { ['idea-title','idea-desc','idea-val','idea-tag','idea-deadline','idea-link'].forEach(f => document.getElementById(f).value = ''); }
         function showToast(m) { const t = document.createElement('div'); t.className = 'toast'; t.innerText = m; document.getElementById('toast-container').appendChild(t); setTimeout(() => t.remove(), 2500); }
         
-        // MODAL FOCO + CHECKLIST
         window.openFocus = id => {
             const i = allIdeas.find(x => x.id === id);
             if(!i) return;
@@ -377,14 +475,12 @@
                 <p style="color:var(--primary); font-size:0.6rem; font-weight:900; letter-spacing:1px;">DOCUMENTO ESTRATÉGICO</p>
                 <h2 style="margin:10px 0 5px;">${i.title}</h2>
                 <p style="margin:0 0 15px 0; color:var(--success); font-weight:800;">Valor Estimado: ${valDisplay}</p>
-                
                 <div style="background:rgba(0,0,0,0.03); padding:20px; border-radius:15px; font-size:0.95rem; line-height:1.6; white-space:pre-wrap;">${i.desc || 'Sem notas detalhadas.'}</div>
                 
                 <div style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap;">
                     ${i.link ? `<a href="${i.link}" target="_blank" style="background:rgba(99,102,241,0.1); color:var(--primary); padding:8px 15px; border-radius:8px; text-decoration:none; font-weight:700; font-size:0.8rem;">🔗 Link Externo</a>` : ''}
                     <button class="btn-gpj" style="font-size:0.7rem; padding:8px 15px; width:auto;" onclick="window.exportPDF('${i.id}')">📄 Gerar PDF</button>
                 </div>
-
                 <div style="margin-top:25px; border-top:1px solid var(--border); padding-top:20px;">
                     <h4 style="margin:0 0 10px 0; font-size:0.7rem; letter-spacing:1px; color:var(--text-muted); text-transform:uppercase;">Plano de Execução</h4>
                     <div id="check-items-list">
@@ -412,49 +508,37 @@
             const newList = [...(i.checklist || []), { text, done: false }];
             await updateDoc(doc(db, "ideas", id), { checklist: newList });
         };
-
         window.toggleTask = async (id, idx) => {
             const i = allIdeas.find(x => x.id === id);
             const newList = [...i.checklist];
             newList[idx].done = !newList[idx].done;
             await updateDoc(doc(db, "ideas", id), { checklist: newList });
         };
-
         window.removeTask = async (id, idx) => {
             const i = allIdeas.find(x => x.id === id);
             const newList = i.checklist.filter((_, index) => index !== idx);
             await updateDoc(doc(db, "ideas", id), { checklist: newList });
         };
-
         window.closeFocus = () => { document.getElementById('focus-modal').style.display = 'none'; };
         
         window.exportPDF = (id) => {
             const i = allIdeas.find(x => x.id === id);
             const { jsPDF } = window.jspdf;
             const docPdf = new jsPDF();
-            
-            docPdf.setFontSize(20);
-            docPdf.text("GPJ ENTERPRISES", 10, 20);
-            
-            docPdf.setFontSize(14);
-            docPdf.text(`Projeto: ${i.title}`, 10, 35);
+            docPdf.setFontSize(20); docPdf.text("GPJ ENTERPRISES", 10, 20);
+            docPdf.setFontSize(14); docPdf.text(`Projeto: ${i.title}`, 10, 35);
             docPdf.text(`Valor: R$ ${i.value || 0}`, 10, 45);
             docPdf.text(`Status: ${i.status} | Prazo: ${i.deadline || 'N/A'}`, 10, 55);
-            
             docPdf.setFontSize(12);
             const splitDesc = docPdf.splitTextToSize(i.desc || "Sem descrição.", 180);
             docPdf.text(splitDesc, 10, 70);
-            
             let y = 70 + (splitDesc.length * 7);
-            
             if(i.checklist && i.checklist.length > 0) {
                 docPdf.text("CHECKLIST DE TAREFAS:", 10, y + 10);
                 i.checklist.forEach((t, idx) => {
-                    const status = t.done ? "[X]" : "[ ]";
-                    docPdf.text(`${status} ${t.text}`, 15, y + 20 + (idx * 7));
+                    docPdf.text(`${t.done ? "[X]" : "[ ]"} ${t.text}`, 15, y + 20 + (idx * 7));
                 });
             }
-            
             docPdf.save(`Relatorio_GPJ_${i.title}.pdf`);
         };
 
