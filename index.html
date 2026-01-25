@@ -39,7 +39,6 @@
         .idea-card { background: var(--card-bg); padding: 1.2rem; margin-bottom: 15px; border-radius: 15px; border: 1px solid var(--border); position: relative; transition: 0.2s; cursor: pointer; }
         .prio-indicator { position: absolute; left: 0; top: 0; bottom: 0; width: 5px; border-radius: 15px 0 0 15px; }
         .btn-gpj { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 10px; font-weight: 800; cursor: pointer; text-transform: uppercase; width: 100%; transition: 0.2s; }
-        .btn-gpj:hover { opacity: 0.9; transform: translateY(-1px); }
         .tag-pill { font-size: 0.65rem; padding: 5px 12px; border-radius: 20px; background: rgba(99,102,241,0.1); color: var(--primary); cursor: pointer; font-weight: 700; border: 1px solid transparent; }
         .tag-pill.active { background: var(--primary); color: white; }
     </style>
@@ -51,29 +50,23 @@
     <div id="auth-container" class="overlay">
         <div class="modal-card" style="max-width:400px; text-align:center;">
             <div style="background: var(--primary); width: 60px; height: 60px; border-radius: 15px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: 900;">IF</div>
-            <h2 style="color:var(--text); margin:0;">Login IdeaFlow</h2>
-            <p style="font-size:0.7rem; letter-spacing:1px; color:var(--text-muted); margin-bottom:2rem;">GPJ ENTERPRISES SECURE ACCESS</p>
-            
+            <h2>GPJ IdeaFlow</h2>
             <input type="email" id="login-email" placeholder="E-mail" style="width:100%; margin-bottom:12px; box-sizing: border-box; border: 2px solid var(--border);">
             <input type="password" id="login-pass" placeholder="Senha" style="width:100%; margin-bottom:15px; box-sizing: border-box; border: 2px solid var(--border);">
             
             <button type="button" onclick="window.resetPassword()" style="background:none; border:none; color:var(--primary); font-size:0.75rem; cursor:pointer; font-weight:bold; margin-bottom:20px; text-decoration:underline;">Esqueci minha senha</button>
             
-            <button class="btn-gpj" id="btn-login" style="margin-bottom:10px;">Acessar Painel</button>
+            <button class="btn-gpj" id="btn-login" style="margin-bottom:10px;">Entrar</button>
             <button class="btn-gpj" id="btn-signup" style="background:none; color:var(--text); border:1px solid var(--border);">Criar Conta</button>
-            
-            <p id="auth-msg" style="font-size:0.8rem; margin-top:20px; font-weight:bold;"></p>
+            <p id="auth-msg" style="font-size:0.8rem; margin-top:10px; font-weight:bold;"></p>
         </div>
     </div>
 
     <div id="main-app">
         <aside class="sidebar">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div>
-                    <span style="font-weight:900; color:var(--primary); font-size:1.4rem; letter-spacing:-1px;">IdeaFlow</span>
-                    <p style="margin:0; font-size:0.5rem; color:var(--text-muted); font-weight:700; letter-spacing:1px;">GPJ ENTERPRISES</p>
-                </div>
-                <button onclick="window.toggleTheme()" style="background:none; border:none; cursor:pointer; font-size:1.2rem;">🌙</button>
+                <span style="font-weight:900; color:var(--primary);">IdeaFlow GPJ</span>
+                <button onclick="window.toggleTheme()" style="background:none; border:none; cursor:pointer;">🌙</button>
             </div>
 
             <div class="stats-grid">
@@ -90,43 +83,39 @@
 
             <div class="input-group">
                 <input type="hidden" id="edit-id">
-                <input type="text" id="idea-title" placeholder="Título do Insight">
-                <textarea id="idea-desc" placeholder="Notas estratégicas..."></textarea>
+                <input type="text" id="idea-title" placeholder="Título">
+                <textarea id="idea-desc" placeholder="Descrição..."></textarea>
                 <div class="row-group">
-                    <input type="number" id="idea-val" placeholder="Valor Estimado R$">
+                    <input type="number" id="idea-val" placeholder="R$">
                     <input type="text" id="idea-tag" placeholder="Tag">
+                </div>
+                <div class="row-group">
+                    <input type="url" id="idea-link" placeholder="Link (URL)">
+                    <input type="date" id="idea-deadline">
                 </div>
                 <select id="idea-status">
                     <option value="pendente">Pendente</option>
                     <option value="andamento">Em Curso</option>
                     <option value="concluida">Concluída</option>
                 </select>
-                <button class="btn-gpj" id="btn-save">Salvar Insight</button>
+                <button class="btn-gpj" id="btn-save">Salvar</button>
             </div>
             
-            <input type="text" id="search-input" placeholder="🔍 Pesquisar..." style="background:rgba(0,0,0,0.05); border:none; width:100%; box-sizing:border-box; padding:12px; border-radius:10px;">
             <div id="tag-filters" style="display:flex; flex-wrap:wrap; gap:5px; margin-top:10px;"></div>
-
-            <div style="margin-top:auto; padding-top:20px; border-top:1px solid var(--border);">
-                <button id="btn-logout" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.7rem; font-weight:700;">SAIR DO SISTEMA</button>
-            </div>
+            <button id="btn-logout" style="margin-top:auto; background:none; border:none; color:var(--danger); cursor:pointer; font-weight:bold;">SAIR</button>
         </aside>
 
         <main class="main-content">
-            <div id="list-view-container" style="display:block;"><div id="ideasList" style="max-width:850px; margin:0 auto;"></div></div>
+            <div id="list-view-container" style="display:block;"><div id="ideasList"></div></div>
             <div id="kanban-view-container" class="kanban-container" style="display:none;">
                 <div class="kanban-column" data-status="pendente"><h3>Pendente</h3><div id="k-pendente"></div></div>
                 <div class="kanban-column" data-status="andamento"><h3>Em Curso</h3><div id="k-andamento"></div></div>
                 <div class="kanban-column" data-status="concluida"><h3>Concluída</h3><div id="k-concluida"></div></div>
             </div>
             <div id="dashboard-view-container" style="display:none;">
-                <div class="dash-card" style="background:var(--card-bg); padding:20px; border-radius:15px; border:1px solid var(--border); margin-bottom:20px;">
-                    <span style="font-size:0.7rem; color:var(--text-muted); font-weight:bold;">VALOR TOTAL DO ECOSSISTEMA</span>
-                    <div id="dash-total-money" style="font-size:2.5rem; font-weight:900; color:var(--success);">R$ 0,00</div>
-                </div>
+                <h1 id="dash-total-money" style="color:var(--success); text-align:center;">R$ 0,00</h1>
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-                    <div class="dash-card" style="background:var(--card-bg); padding:20px; border-radius:15px; border:1px solid var(--border);"><canvas id="financeChart"></canvas></div>
-                    <div class="dash-card" style="background:var(--card-bg); padding:20px; border-radius:15px; border:1px solid var(--border);"><canvas id="statusChart"></canvas></div>
+                    <canvas id="financeChart"></canvas><canvas id="statusChart"></canvas>
                 </div>
             </div>
         </main>
@@ -154,30 +143,26 @@
         let financeChart = null;
         let statusChart = null;
 
-        // --- FUNÇÃO DE REDEFINIÇÃO ---
         window.resetPassword = () => {
             const email = document.getElementById('login-email').value;
-            if(!email) return alert("Por favor, digite seu e-mail no campo acima.");
-            sendPasswordResetEmail(auth, email)
-                .then(() => alert("E-mail de redefinição enviado com sucesso! Verifique sua caixa de entrada."))
-                .catch(e => alert("Erro: " + e.message));
+            if(!email) return alert("Digite seu e-mail.");
+            sendPasswordResetEmail(auth, email).then(() => alert("Link de redefinição enviado!")).catch(e => alert(e.message));
         };
 
-        // --- LÓGICA DE AUTH ---
         document.getElementById('btn-login').onclick = () => {
             const email = document.getElementById('login-email').value;
             const pass = document.getElementById('login-pass').value;
             signInWithEmailAndPassword(auth, email, pass).then(u => {
-                if(!u.user.emailVerified) { alert("Verifique seu e-mail para ativar a conta!"); signOut(auth); }
-            }).catch(e => alert("Usuário ou senha inválidos."));
+                if(!u.user.emailVerified) { alert("Confirme seu e-mail!"); signOut(auth); }
+            }).catch(() => alert("Erro no acesso."));
         };
 
         document.getElementById('btn-signup').onclick = () => {
             const email = document.getElementById('login-email').value;
             const pass = document.getElementById('login-pass').value;
             createUserWithEmailAndPassword(auth, email, pass).then(u => {
-                sendEmailVerification(u.user); alert("E-mail de ativação enviado! Verifique sua caixa de entrada."); signOut(auth);
-            }).catch(e => alert("Erro ao criar conta: " + e.message));
+                sendEmailVerification(u.user); alert("E-mail enviado!"); signOut(auth);
+            });
         };
 
         onAuthStateChanged(auth, (user) => {
@@ -191,44 +176,36 @@
             }
         });
 
-        // --- SINCRONIZAÇÃO FIREBASE ---
         function syncData(uid) {
             const q = query(collection(db, "ideas"), where("uid", "==", uid));
             onSnapshot(q, (snapshot) => {
-                allIdeas = [];
-                snapshot.forEach(doc => allIdeas.push({id: doc.id, ...doc.data()}));
+                allIdeas = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
                 updateStats(); updateTagCloud(); renderAll(); updateDashboard();
             });
         }
 
         function renderAll() {
-            const term = document.getElementById('search-input').value.toLowerCase();
-            let filtered = allIdeas.filter(i => {
-                const matchSearch = i.title.toLowerCase().includes(term);
-                const matchTag = !activeTagFilter || i.tag === activeTagFilter;
-                return matchSearch && matchTag;
-            });
-
+            let filtered = allIdeas.filter(i => !activeTagFilter || i.tag === activeTagFilter);
             document.getElementById('ideasList').innerHTML = filtered.map(i => `
                 <div class="idea-card" onclick="window.openFocus('${i.id}')">
-                    <div class="prio-indicator" style="background:#10b981"></div>
-                    <div style="font-size:0.6rem; color:var(--text-muted)">#${i.tag}</div>
-                    <strong style="display:block; margin:5px 0;">${i.title}</strong>
-                    <div style="font-size:0.75rem; font-weight:bold; color:var(--success)">R$ ${parseFloat(i.value||0).toLocaleString('pt-BR')}</div>
+                    <div class="prio-indicator" style="background:var(--primary)"></div>
+                    <small>#${i.tag}</small>
+                    <strong style="display:block;">${i.title}</strong>
+                    <div style="color:var(--success)">R$ ${parseFloat(i.value||0).toLocaleString('pt-BR')}</div>
                 </div>
             `).join('');
 
-            // Render Kanban Simples
             ['pendente', 'andamento', 'concluida'].forEach(s => {
                 document.getElementById(`k-${s}`).innerHTML = filtered.filter(x => x.status === s).map(i => `
-                    <div class="idea-card" style="padding:10px; margin-bottom:10px;">
-                        <strong style="font-size:0.8rem;">${i.title}</strong>
+                    <div class="idea-card" style="padding:10px;" onclick="window.openFocus('${i.id}')">
+                        <strong>${i.title}</strong>
                     </div>
                 `).join('');
             });
         }
 
         document.getElementById('btn-save').onclick = async () => {
+            const id = document.getElementById('edit-id').value;
             const data = {
                 uid: auth.currentUser.uid,
                 title: document.getElementById('idea-title').value,
@@ -236,12 +213,51 @@
                 tag: document.getElementById('idea-tag').value || 'Geral',
                 value: document.getElementById('idea-val').value || 0,
                 status: document.getElementById('idea-status').value,
+                link: document.getElementById('idea-link').value || '',
+                deadline: document.getElementById('idea-deadline').value || '',
                 createdAt: Date.now()
             };
-            if(!data.title) return alert("Dê um título ao insight!");
-            await addDoc(collection(db, "ideas"), data);
-            ['idea-title','idea-desc','idea-val','idea-tag'].forEach(f => document.getElementById(f).value = '');
+            if(!data.title) return;
+            if(id) await updateDoc(doc(db, "ideas", id), data);
+            else await addDoc(collection(db, "ideas"), data);
+            
+            document.getElementById('edit-id').value = "";
+            ['idea-title','idea-desc','idea-val','idea-tag','idea-link','idea-deadline'].forEach(f => document.getElementById(f).value = '');
         };
+
+        window.openFocus = (id) => {
+            const i = allIdeas.find(x => x.id === id);
+            document.getElementById('focus-content').innerHTML = `
+                <span onclick="window.closeFocus()" style="float:right; cursor:pointer;">×</span>
+                <h2>${i.title}</h2>
+                <p><strong>Status:</strong> ${i.status} | <strong>R$:</strong> ${i.value}</p>
+                <p><strong>Prazo:</strong> ${i.deadline || 'Sem data'}</p>
+                <div style="background:#f9f9f9; padding:15px; border-radius:10px;">${i.desc}</div>
+                ${i.link ? `<p><a href="${i.link}" target="_blank">🔗 Acessar Link Externo</a></p>` : ''}
+                <div style="display:flex; gap:10px; margin-top:20px;">
+                    <button class="btn-gpj" onclick="window.editIdea('${i.id}')">Editar</button>
+                    <button class="btn-gpj" style="background:var(--danger)" onclick="window.deleteIdea('${i.id}')">Excluir</button>
+                    <button class="btn-gpj" style="background:#10b981" onclick="window.exportPDF('${i.id}')">PDF</button>
+                </div>
+            `;
+            document.getElementById('focus-modal').style.display = 'flex';
+        };
+
+        window.editIdea = (id) => {
+            const i = allIdeas.find(x => x.id === id);
+            document.getElementById('edit-id').value = i.id;
+            document.getElementById('idea-title').value = i.title;
+            document.getElementById('idea-desc').value = i.desc;
+            document.getElementById('idea-tag').value = i.tag;
+            document.getElementById('idea-val').value = i.value;
+            document.getElementById('idea-status').value = i.status;
+            document.getElementById('idea-link').value = i.link;
+            document.getElementById('idea-deadline').value = i.deadline;
+            window.closeFocus();
+        };
+
+        window.deleteIdea = async (id) => { if(confirm("Apagar?")) { await deleteDoc(doc(db, "ideas", id)); window.closeFocus(); } };
+        window.closeFocus = () => document.getElementById('focus-modal').style.display='none';
 
         function updateStats() {
             const s = { pendente: 0, andamento: 0, concluida: 0 };
@@ -270,7 +286,6 @@
         window.toggleTheme = () => document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
         document.getElementById('btn-logout').onclick = () => signOut(auth);
         
-        // Navegação de Tabs
         document.getElementById('tab-list-btn').onclick = () => switchTab('list-view-container', 'tab-list-btn');
         document.getElementById('tab-kanban-btn').onclick = () => switchTab('kanban-view-container', 'tab-kanban-btn');
         document.getElementById('tab-dash-btn').onclick = () => switchTab('dashboard-view-container', 'tab-dash-btn');
@@ -278,7 +293,7 @@
         function switchTab(view, btn) {
             ['list-view-container','kanban-view-container','dashboard-view-container'].forEach(v => document.getElementById(v).style.display='none');
             ['tab-list-btn','tab-kanban-btn','tab-dash-btn'].forEach(b => document.getElementById(b).classList.remove('active'));
-            document.getElementById(view).style.display = view === 'kanban-view-container' ? 'grid' : 'block';
+            document.getElementById(view).style.display = 'block';
             document.getElementById(btn).classList.add('active');
         }
     </script>
