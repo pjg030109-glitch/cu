@@ -21,49 +21,40 @@
 
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; min-height: 100vh; transition: 0.3s; overflow-x: hidden; }
         
-        /* Modais */
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
         .modal-card { background: var(--sidebar-bg); padding: 2.5rem; border-radius: 20px; width: 100%; max-width: 550px; position: relative; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
 
         #main-app { display: none; width: 100%; }
         
-        /* Sidebar */
         .sidebar { width: 350px; background: var(--sidebar-bg); padding: 1.5rem; border-right: 1px solid var(--border); height: 100vh; position: sticky; top: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; box-sizing: border-box; }
         .main-content { flex: 1; padding: 2rem; box-sizing: border-box; overflow-y: auto; height: 100vh; }
 
-        /* Stats Grid Sidebar */
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 5px; }
         .stat-item { background: rgba(0,0,0,0.03); padding: 10px; border-radius: 12px; text-align: center; border: 1px solid var(--border); }
         .stat-val { display: block; font-weight: 900; font-size: 1.1rem; color: var(--primary); }
         .stat-label { font-size: 0.6rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; margin-top: 3px; }
 
-        /* Inputs */
         .input-group { display: flex; flex-direction: column; gap: 10px; background: rgba(0,0,0,0.03); padding: 20px; border-radius: 15px; border: 1px solid var(--border); }
         .row-group { display: flex; gap: 8px; flex-wrap: wrap; }
         input, select, textarea { padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--card-bg); color: var(--text); font-size: 0.9rem; transition: 0.2s; flex: 1; min-width: 100px; }
-        input:focus, textarea:focus { outline: none; border-color: var(--primary); ring: 2px solid var(--primary); }
+        input:focus, textarea:focus { outline: none; border-color: var(--primary); }
         textarea { min-height: 80px; resize: vertical; width: 100%; box-sizing: border-box; }
 
-        /* Tabs */
         .view-tabs { display: flex; background: rgba(0,0,0,0.05); padding: 5px; border-radius: 12px; margin-bottom: 5px; }
         .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-size: 0.75rem; font-weight: 800; color: var(--text-muted); background: transparent; transition: 0.3s; }
         .tab-btn.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
 
-        /* Views Containers */
         #list-view-container, #kanban-view-container, #dashboard-view-container { display: none; }
 
-        /* Kanban */
         .kanban-container { grid-template-columns: repeat(3, 1fr); gap: 20px; }
         .kanban-column { background: rgba(0,0,0,0.02); border-radius: 18px; padding: 15px; min-height: 80vh; border: 2px dashed transparent; transition: 0.3s; }
         .kanban-column.drag-over { background: rgba(99, 102, 241, 0.1); border-color: var(--primary); }
         .kanban-column h3 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 15px; text-align: center; }
 
-        /* Dashboard Styles */
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
         .dash-card { background: var(--card-bg); padding: 20px; border-radius: 15px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         .total-money { font-size: 2.5rem; font-weight: 900; color: var(--success); letter-spacing: -1px; margin: 10px 0; }
         
-        /* Cards & Tags */
         .idea-card { background: var(--card-bg); padding: 1.2rem; margin-bottom: 15px; border-radius: 15px; border: 1px solid var(--border); position: relative; transition: 0.2s; cursor: grab; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         .idea-card:hover { border-color: var(--primary); transform: translateY(-2px); }
         .idea-card.dragging { opacity: 0.5; }
@@ -73,7 +64,6 @@
         .tag-pill.active { background: var(--primary); color: white; }
         .value-badge { color: var(--success); font-weight: 800; font-size: 0.8rem; margin-left: 8px; }
 
-        /* Checklist */
         .check-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; background: rgba(0,0,0,0.02); padding: 10px; border-radius: 8px; transition: 0.2s; }
         .check-item:hover { background: var(--card-bg); }
         .check-text { flex: 1; font-size: 0.9rem; color: var(--text); }
@@ -99,7 +89,10 @@
             <h2 style="color:var(--text); margin:0;">Bem-vindo à GPJ</h2>
             <p style="font-size:0.7rem; letter-spacing:2px; color:var(--text-muted); margin-bottom:2rem; text-transform: uppercase;">Acesso IdeaFlow Pro</p>
             <input type="email" id="login-email" placeholder="E-mail" style="width:100%; margin-bottom:12px; box-sizing: border-box;">
-            <input type="password" id="login-pass" placeholder="Senha" style="width:100%; margin-bottom:20px; box-sizing: border-box;">
+            <input type="password" id="login-pass" placeholder="Senha" style="width:100%; margin-bottom:12px; box-sizing: border-box;">
+            
+            <button onclick="window.resetPassword()" style="background:none; border:none; color:var(--primary); font-size:0.75rem; cursor:pointer; font-weight:bold; margin-bottom:20px; text-decoration:underline;">Esqueci minha senha</button>
+
             <button class="btn-gpj" id="btn-login" style="margin-bottom:10px;">Entrar</button>
             <button class="btn-gpj" id="btn-signup" style="background:none; color:var(--text); border:1px solid var(--border);">Criar Conta</button>
         </div>
@@ -204,7 +197,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, where, onSnapshot, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -224,14 +217,27 @@
         let financeChart = null;
         let statusChart = null;
 
+        // REDEFINIR SENHA
+        window.resetPassword = () => {
+            const email = document.getElementById('login-email').value;
+            if(!email) return alert("Por favor, digite seu e-mail no campo acima.");
+            sendPasswordResetEmail(auth, email)
+                .then(() => alert("E-mail de redefinição de senha enviado! Verifique sua caixa de entrada."))
+                .catch(e => alert("Erro: " + e.message));
+        };
+
         onAuthStateChanged(auth, (user) => {
-            if (user) {
+            if (user && user.emailVerified) {
                 document.getElementById('auth-container').style.display = 'none';
                 document.getElementById('main-app').style.display = 'flex';
                 syncData(user.uid);
             } else {
                 document.getElementById('auth-container').style.display = 'flex';
                 document.getElementById('main-app').style.display = 'none';
+                if(user && !user.emailVerified) {
+                    alert("Por favor, confirme seu e-mail antes de acessar!");
+                    signOut(auth);
+                }
             }
         });
 
@@ -243,13 +249,12 @@
                 updateTagCloud();
                 updateStats();
                 renderAll();
-                updateDashboard(); // Atualiza os gráficos
+                updateDashboard();
                 const openId = document.getElementById('current-focus-id')?.value;
                 if(openId) window.openFocus(openId);
             });
         }
 
-        // TABS LOGIC
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('#list-view-container, #kanban-view-container, #dashboard-view-container').forEach(c => c.style.display = 'none');
@@ -263,7 +268,7 @@
             } else if(tab === 'dash') {
                 document.getElementById('tab-dash-btn').classList.add('active');
                 document.getElementById('dashboard-view-container').style.display = 'block';
-                updateDashboard(); // Garante renderização ao clicar na aba
+                updateDashboard();
             }
         }
         document.getElementById('tab-list-btn').onclick = () => switchTab('list');
@@ -278,9 +283,7 @@
             document.getElementById('count-concluida').innerText = stats.concluida;
         }
 
-        // NOVA FUNÇÃO: Lógica do Dashboard
         function updateDashboard() {
-            // Cálculos
             const vals = { pendente: 0, andamento: 0, concluida: 0 };
             const counts = { pendente: 0, andamento: 0, concluida: 0 };
             let totalMoney = 0;
@@ -294,18 +297,13 @@
                 }
             });
 
-            // Atualiza KPI Texto
             document.getElementById('dash-total-money').innerText = `R$ ${totalMoney.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-
-            // Configuração dos Gráficos
             const ctxFin = document.getElementById('financeChart').getContext('2d');
             const ctxStat = document.getElementById('statusChart').getContext('2d');
             
-            // Destruir anteriores se existirem para não sobrepor
             if(financeChart) financeChart.destroy();
             if(statusChart) statusChart.destroy();
 
-            // Gráfico Financeiro (Barras)
             financeChart = new Chart(ctxFin, {
                 type: 'bar',
                 data: {
@@ -324,7 +322,6 @@
                 }
             });
 
-            // Gráfico de Status (Doughnut)
             statusChart = new Chart(ctxStat, {
                 type: 'doughnut',
                 data: {
@@ -542,8 +539,24 @@
             docPdf.save(`Relatorio_GPJ_${i.title}.pdf`);
         };
 
-        document.getElementById('btn-login').onclick = () => signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value);
-        document.getElementById('btn-signup').onclick = () => createUserWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value);
+        document.getElementById('btn-login').onclick = () => {
+            signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value)
+                .catch(e => alert("Falha no login: E-mail ou senha incorretos."));
+        };
+
+        document.getElementById('btn-signup').onclick = () => {
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
+            if(!email || !pass) return alert("Preencha todos os campos.");
+            createUserWithEmailAndPassword(auth, email, pass)
+                .then((u) => {
+                    sendEmailVerification(u.user);
+                    alert("Conta criada! Enviamos um e-mail de confirmação. Verifique sua caixa de entrada.");
+                    signOut(auth);
+                })
+                .catch(e => alert("Erro ao criar conta: " + e.message));
+        };
+
         document.getElementById('btn-logout').onclick = () => signOut(auth);
         window.toggleTheme = () => { const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; document.documentElement.setAttribute('data-theme', t); };
         document.getElementById('search-input').onkeyup = renderAll;
