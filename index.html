@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IdeaFlow Pro v3.1 | GPJ Dashboard Edition</title>
+    <title>IdeaFlow Pro v3.2 | GPJ Dashboard Edition</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
@@ -56,6 +55,9 @@
         .dash-card { background: var(--card-bg); padding: 20px; border-radius: 15px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         .total-money { font-size: 2.5rem; font-weight: 900; color: var(--success); letter-spacing: -1px; margin: 10px 0; }
         
+        .efficiency-badge { display: inline-block; padding: 5px 12px; border-radius: 20px; font-weight: 800; font-size: 0.75rem; margin-top: 10px; }
+        .health-alert { margin-top: 15px; padding: 12px; border-radius: 10px; font-size: 0.8rem; font-weight: 600; }
+
         .idea-card { background: var(--card-bg); padding: 1.2rem; margin-bottom: 15px; border-radius: 15px; border: 1px solid var(--border); position: relative; transition: 0.2s; cursor: grab; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         .idea-card:hover { border-color: var(--primary); transform: translateY(-2px); }
         .idea-card.dragging { opacity: 0.5; }
@@ -186,6 +188,13 @@
                 <h2 style="margin-top:0;">Visão Executiva</h2>
                 <div class="dashboard-grid">
                     <div class="dash-card">
+                        <span style="text-transform:uppercase; color:var(--text-muted); font-size:0.7rem; letter-spacing:1px; font-weight:bold;">Performance de Insights</span>
+                        <div class="total-money" id="dash-efficiency-index">0%</div>
+                        <div id="efficiency-tag" class="efficiency-badge">Calculando...</div>
+                        <div id="health-check-msg" class="health-alert"></div>
+                    </div>
+
+                    <div class="dash-card">
                         <span style="text-transform:uppercase; color:var(--text-muted); font-size:0.7rem; letter-spacing:1px; font-weight:bold;">Valor Total em Pipeline</span>
                         <div class="total-money" id="dash-total-money">R$ 0,00</div>
                         <p style="margin:0; font-size:0.8rem; color:var(--text-muted);">Soma de todos os projetos ativos.</p>
@@ -212,7 +221,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, where, onSnapshot, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, where, onSnapshot, deleteDoc, doc, updateDoc, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDnXmurBXWauvg7hlxShOaZ4JIrtdpB3bo",
@@ -226,12 +235,18 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+
+        // ATIVAÇÃO DE PERSISTÊNCIA OFFLINE
+        enableIndexedDbPersistence(db).catch((err) => {
+            if (err.code == 'failed-precondition') console.log("Persistência falhou: Múltiplas abas abertas.");
+            else if (err.code == 'unimplemented') console.log("O navegador não suporta persistência.");
+        });
+
         let allIdeas = [];
         let activeTagFilter = null;
         let financeChart = null;
         let statusChart = null;
 
-        // REDEFINIR SENHA
         window.resetPassword = () => {
             const email = document.getElementById('login-email').value;
             if(!email) return alert("Por favor, digite seu e-mail no campo acima.");
@@ -311,7 +326,40 @@
                 }
             });
 
+            // NOVO: Cálculo de Eficiência
+            const totalIdeas = allIdeas.length;
+            const efficiency = totalIdeas > 0 ? Math.round((counts.concluida / totalIdeas) * 100) : 0;
+            const effEl = document.getElementById('dash-efficiency-index');
+            const tagEl = document.getElementById('efficiency-tag');
+            const healthEl = document.getElementById('health-check-msg');
+
+            effEl.innerText = `${efficiency}%`;
+            
+            if(efficiency >= 70) {
+                tagEl.innerText = "ALTA PRODUTIVIDADE";
+                tagEl.style.background = "var(--success)";
+                tagEl.style.color = "white";
+                healthEl.innerText = "Excelente! O seu fluxo de execução está saudável.";
+                healthEl.style.background = "rgba(16, 185, 129, 0.1)";
+                healthEl.style.color = "var(--success)";
+            } else if(efficiency >= 30) {
+                tagEl.innerText = "RITMO ESTÁVEL";
+                tagEl.style.background = "var(--warning)";
+                tagEl.style.color = "white";
+                healthEl.innerText = "Bom ritmo, mas tente concluir as tarefas em curso.";
+                healthEl.style.background = "rgba(245, 158, 11, 0.1)";
+                healthEl.style.color = "var(--warning)";
+            } else {
+                tagEl.innerText = "ALERTA DE SOBRECARGA";
+                tagEl.style.background = "var(--danger)";
+                tagEl.style.color = "white";
+                healthEl.innerText = "Atenção: Muitas ideias pendentes. Foque na execução!";
+                healthEl.style.background = "rgba(239, 68, 68, 0.1)";
+                healthEl.style.color = "var(--danger)";
+            }
+
             document.getElementById('dash-total-money').innerText = `R$ ${totalMoney.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            
             const ctxFin = document.getElementById('financeChart').getContext('2d');
             const ctxStat = document.getElementById('statusChart').getContext('2d');
             
@@ -558,11 +606,10 @@
                 .catch(e => alert("Falha no login: E-mail ou senha incorretos."));
         };
 
-        // ALTERADO: Lógica de Cadastro com Validação de Termos
         document.getElementById('btn-signup').onclick = () => {
             const email = document.getElementById('login-email').value;
             const pass = document.getElementById('login-pass').value;
-            const agreed = document.getElementById('agree-terms').checked; // Checkbox obrigatório
+            const agreed = document.getElementById('agree-terms').checked;
 
             if(!email || !pass) return alert("Preencha todos os campos.");
             
