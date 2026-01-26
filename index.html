@@ -436,6 +436,9 @@
             const tasksDone = i.checklist?.filter(t => t.done).length || 0;
             const progressDisplay = tasksTotal > 0 ? `<div style="font-size:0.6rem; color:var(--primary); font-weight:800; margin-top:4px;">✅ ${tasksDone}/${tasksTotal} TAREFAS</div>` : '';
 
+            // MODIFICAÇÃO: Feedback visual no botão de pin
+            const pinOpacity = i.pinned ? "1" : "0.3";
+
             return `
                 <div class="idea-card" draggable="true" data-id="${i.id}" data-status="${i.status}" onclick="window.openFocus('${i.id}')">
                     <div class="prio-indicator" style="background:${colors[i.prio]}"></div>
@@ -445,10 +448,10 @@
                             <strong style="display:block; margin-top:2px; font-size:1rem;">${i.title}</strong>
                             ${deadlineInfo} ${progressDisplay}
                         </div>
-                        <div onclick="event.stopPropagation()" style="display:flex; gap:8px; opacity:0.6;">
-                            <button onclick="window.pinIdea('${i.id}', ${i.pinned})" style="background:none; border:none; cursor:pointer; font-size:1rem;">📌</button>
-                            <button onclick="window.editIdea('${i.id}')" style="background:none; border:none; cursor:pointer; font-size:1rem;">✏️</button>
-                            <button onclick="window.deleteIdea('${i.id}')" style="background:none; border:none; cursor:pointer; font-size:1rem;">🗑️</button>
+                        <div onclick="event.stopPropagation()" style="display:flex; gap:8px; opacity:1;">
+                            <button onclick="window.pinIdea('${i.id}', ${i.pinned})" style="background:none; border:none; cursor:pointer; font-size:1rem; opacity:${pinOpacity}; filter:${i.pinned ? 'none' : 'grayscale(1)'}; transition: 0.2s;">📌</button>
+                            <button onclick="window.editIdea('${i.id}')" style="background:none; border:none; cursor:pointer; font-size:1rem; opacity:0.6;">✏️</button>
+                            <button onclick="window.deleteIdea('${i.id}')" style="background:none; border:none; cursor:pointer; font-size:1rem; opacity:0.6;">🗑️</button>
                         </div>
                     </div>
                 </div>
@@ -531,10 +534,15 @@
             if(!i) return;
             document.getElementById('focus-content').innerHTML = `
                 <input type="hidden" id="current-focus-id" value="${i.id}">
-                <span onclick="window.closeFocus()" style="position:absolute; top:20px; right:20px; cursor:pointer; font-size:1.5rem;">×</span>
-                <p style="color:var(--primary); font-size:0.6rem; font-weight:900;">DOCUMENTO ESTRATÉGICO</p>
-                <h2 style="margin:10px 0 5px;">${i.title}</h2>
-                <div style="background:rgba(0,0,0,0.03); padding:20px; border-radius:15px; white-space:pre-wrap;">${i.desc || 'Sem notas.'}</div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                     <p style="color:var(--primary); font-size:0.6rem; font-weight:900; margin:0;">DOCUMENTO ESTRATÉGICO</p>
+                     <div style="display:flex; gap:10px; align-items:center;">
+                        <button onclick="window.exportToPDF('${i.id}')" style="background:var(--success); color:white; border:none; padding:5px 10px; border-radius:5px; font-size:0.65rem; font-weight:800; cursor:pointer;">PDF ↓</button>
+                        <span onclick="window.closeFocus()" style="cursor:pointer; font-size:1.5rem;">×</span>
+                     </div>
+                </div>
+                <h2 style="margin:0 0 15px 0;">${i.title}</h2>
+                <div style="background:rgba(0,0,0,0.03); padding:20px; border-radius:15px; white-space:pre-wrap; margin-bottom:20px;">${i.desc || 'Sem notas.'}</div>
                 <div id="check-items-list" style="margin-top:20px;">
                     ${(i.checklist || []).map((t, idx) => `
                         <div class="check-item">
@@ -549,6 +557,45 @@
                 </div>
             `;
             document.getElementById('focus-modal').style.display = 'flex';
+        };
+
+        // NOVO: Função para exportar PDF
+        window.exportToPDF = (id) => {
+            const i = allIdeas.find(x => x.id === id);
+            if(!i) return;
+            const { jsPDF } = window.jspdf;
+            const docPdf = new jsPDF();
+            
+            docPdf.setFont("helvetica", "bold");
+            docPdf.setFontSize(18);
+            docPdf.text("IdeaFlow Strategic Export", 20, 20);
+            
+            docPdf.setFontSize(12);
+            docPdf.text(`Título: ${i.title}`, 20, 35);
+            docPdf.text(`Status: ${i.status.toUpperCase()}`, 20, 42);
+            docPdf.text(`Prioridade: ${i.prio.toUpperCase()}`, 20, 49);
+            if(i.value) docPdf.text(`Valor Estimado: R$ ${i.value}`, 20, 56);
+            
+            docPdf.setFont("helvetica", "normal");
+            docPdf.text("Descrição:", 20, 70);
+            const splitDesc = docPdf.splitTextToSize(i.desc || "Sem descrição.", 170);
+            docPdf.text(splitDesc, 20, 77);
+            
+            let y = 77 + (splitDesc.length * 7) + 10;
+            if(i.checklist && i.checklist.length > 0) {
+                docPdf.setFont("helvetica", "bold");
+                docPdf.text("Checklist de Execução:", 20, y);
+                y += 7;
+                docPdf.setFont("helvetica", "normal");
+                i.checklist.forEach(t => {
+                    const status = t.done ? "[X]" : "[ ]";
+                    docPdf.text(`${status} ${t.text}`, 25, y);
+                    y += 7;
+                });
+            }
+            
+            docPdf.save(`Insight_${i.title.replace(/\s+/g, '_')}.pdf`);
+            showToast("PDF Gerado!");
         };
 
         window.addTask = async (id) => {
